@@ -1,5 +1,7 @@
 # OsAbstLibrary
-Simple Platform abstraction library made in C
+Simple Platform abstraction library made in C.
+
+Please note that this library is not ready for production use yet.
 
 ## Compatibility
 OsAbstLibrary is officially compatible with the following OSes :
