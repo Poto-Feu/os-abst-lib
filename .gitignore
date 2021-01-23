@@ -53,3 +53,5 @@ dkms.conf
 
 #Custom
 compile_commands.json
+doxygen_docs/
+build/
