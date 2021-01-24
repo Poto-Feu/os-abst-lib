@@ -32,16 +32,16 @@
 
 int OAL_get_USER_DATA_PATH(char *buffer, size_t size)
 {
-	const char *APPDATA_env = getenv("APPDATA");
+	const char *LOCALAPPDATA_env = getenv("LOCALAPPDATA");
 	size_t path_len = OAL_get_USER_DATA_PATH_length();
 
 	if(!buffer) {
 		errno = EFAULT;
 		return -1;
-	} else if(!APPDATA_env || path_len == 0) return -1;
+	} else if(!LOCALAPPDATA_env || path_len == 0) return -1;
 	else if(size < path_len) return -1;
 
-	strcpy(buffer, APPDATA_env);
+	strcpy(buffer, LOCALAPPDATA_env);
 	buffer[path_len - 2] = OS_DIR_SEPARATOR;
 	buffer[path_len - 1] = '\0';
 	return 0;
@@ -49,11 +49,11 @@ int OAL_get_USER_DATA_PATH(char *buffer, size_t size)
 
 size_t OAL_get_USER_DATA_PATH_length(void)
 {
-	const char *APPDATA_env = getenv("APPDATA");
+	const char *LOCALAPPDATA_env = getenv("LOCALAPPDATA");
 
 	/* Add 2 characters for the end slash and the null terminator */
-	if(!APPDATA_env) return 0;
-	else return strlen(APPDATA_env) + 2; 
+	if(!LOCALAPPDATA_env) return 0;
+	else return strlen(LOCALAPPDATA_env) + 2; 
 }
 
 int OAL_get_executable_path(char *buffer, size_t size)
