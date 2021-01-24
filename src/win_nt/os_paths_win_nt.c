@@ -38,6 +38,9 @@ int OAL_get_USER_DATA_PATH(char *buffer, size_t size)
 	if(!buffer) {
 		errno = EFAULT;
 		return -1;
+	} else if(size == 0) {
+		errno = EINVAL;
+		return -1;
 	} else if(!LOCALAPPDATA_env || path_len == 0) return -1;
 	else if(size < path_len) return -1;
 

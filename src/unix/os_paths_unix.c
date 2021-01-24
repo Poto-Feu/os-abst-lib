@@ -47,7 +47,10 @@ int OAL_get_USER_DATA_PATH(char *buffer, size_t size)
 		errno = EFAULT;
 		return -1;
 	} else if(!HOME_env || path_len == 0) return -1;
-	else if(size < path_len) return -1;
+	else if(size < path_len) {
+		errno = EFAULT;
+		return -1;
+	}
 
 	strcpy(buffer, HOME_env);
 	strcat(buffer, user_data_dir_suffix);
