@@ -67,6 +67,8 @@ size_t OAL_get_executable_path_length(void)
 int OAL_get_executable_directory(char *buffer, size_t size)
 {
 	ssize_t final_slash_pos = -1;
+	size_t exec_path_length = OAL_get_max_filepath_length();
+	char *exec_path;
 	
 	if(!buffer) {
 		errno = EFAULT;
@@ -74,16 +76,27 @@ int OAL_get_executable_directory(char *buffer, size_t size)
 	} else if(size == 0) {
 		errno = EINVAL;
 		return -1;
-	} else if(OAL_get_executable_path(buffer, size) != 0) return -1;
+	} else if(exec_path_length == 0) return -1;
 
-	for(size_t i = 0; i < size && buffer[i] != '\0'; ++i) {
-		if(buffer[i] == OS_DIR_SEPARATOR) final_slash_pos = i;
+	exec_path = malloc(exec_path_length);
+	if(!exec_path) return -1;
+	else if(OAL_get_executable_path(exec_path, exec_path_length) != 0) {
+		free(exec_path);
+		return -1;
 	}
 
-	if(final_slash_pos == -1) return -1;
-	else {
-		buffer[final_slash_pos] = OS_DIR_SEPARATOR;
-		buffer[final_slash_pos + 1] = '\0';
+	for(size_t i = 0; i < size && exec_path[i] != '\0'; ++i) {
+		if(exec_path[i] == OS_DIR_SEPARATOR) final_slash_pos = i;
+	}
+
+	if(final_slash_pos == -1) {
+		free(exec_path);
+		return -1;
+	} else {
+		exec_path[final_slash_pos] = OS_DIR_SEPARATOR;
+		exec_path[final_slash_pos + 1] = '\0';
+		strcpy(buffer, exec_path);
+		free(exec_path);
 		return 0;
 	}
 }
