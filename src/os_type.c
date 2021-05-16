@@ -22,14 +22,14 @@
 
 enum OAL_os_type OAL_get_os_type(void)
 {
-#if OAL_TARGET_OS == OAL_OS_LINUX
-	return OS_TYPE_GNU_LINUX;
+#if OAL_TARGET_OS == OAL_OS_GNU_LINUX
+	return OAL_OS_TYPE_GNU_LINUX;
 #elif OAL_TARGET_OS == OAL_OS_FREEBSD
-	return OS_TYPE_FREEBSD;
+	return OAL_OS_TYPE_FREEBSD;
 #elif OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	return OS_TYPE_WINDOWS_NT;
+	return OAL_OS_TYPE_WINDOWS_NT;
 #else
-	return OS_TYPE_OTHER;
+	return OAL_OS_TYPE_OTHER;
 #endif
 }
 

@@ -30,10 +30,10 @@
  * \brief Values corresponding to various OS.
  */
 enum OAL_os_type {
-	OS_TYPE_GNU_LINUX,
-	OS_TYPE_FREEBSD,
-	OS_TYPE_WINDOWS_NT,
-	OS_TYPE_OTHER
+	OAL_OS_TYPE_GNU_LINUX,
+	OAL_OS_TYPE_FREEBSD,
+	OAL_OS_TYPE_WINDOWS_NT,
+	OAL_OS_TYPE_OTHER
 };
 
 /*!
