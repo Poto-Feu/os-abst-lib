@@ -29,12 +29,12 @@
 /*!
  * \brief Values corresponding to various OS.
  */
-typedef enum {
+enum OAL_os_type {
 	OS_TYPE_GNU_LINUX,
 	OS_TYPE_FREEBSD,
 	OS_TYPE_WINDOWS_NT,
 	OS_TYPE_OTHER
-} os_type_t;
+};
 
 /*!
  * \brief Fetch the user's OS type
@@ -42,7 +42,7 @@ typedef enum {
  * \see os_type_t
  * \return The corresponding os_type_t enum value
  */
-os_type_t OAL_get_os_type(void);
+enum OAL_os_type OAL_get_os_type(void);
 
 /*!
  * \brief Check wether or not the user's OS is POSIX.

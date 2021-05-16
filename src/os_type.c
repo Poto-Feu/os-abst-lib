@@ -20,7 +20,7 @@
 #include "os_type.h"
 #include "private_consts.h"
 
-os_type_t OAL_get_os_type(void)
+enum OAL_os_type OAL_get_os_type(void)
 {
 #if OAL_TARGET_OS == OAL_OS_LINUX
 	return OS_TYPE_GNU_LINUX;
