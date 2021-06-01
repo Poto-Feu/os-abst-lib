@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(OsAbstLib VERSION 0.2)
+project(OsAbstLib VERSION 0.1)
 
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "Release")
@@ -41,7 +41,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
 endif()
 
 set_target_properties(OsAbstLib PROPERTIES VERSION ${PROJECT_VERSION})
-set_target_properties(OsAbstLib PROPERTIES SOVERSION 0.2)
+set_target_properties(OsAbstLib PROPERTIES SOVERSION 0.1)
 
 set_target_properties(OsAbstLib PROPERTIES PUBLIC_HEADER "include/OsAbstLib.h;\
 include/os_dir.h;include/os_file.h;include/os_paths.h;include/os_string.h;\
