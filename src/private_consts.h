@@ -17,30 +17,7 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef PRIVATE_CONSTS_H
-#define PRIVATE_CONSTS_H
-
-#define OAL_OS_GNU_LINUX 1
-#define OAL_OS_FREEBSD 2
-#define OAL_OS_WINDOWS_NT 3
-#define OAL_OS_OTHER 4
-
-/*Simplify the discrepancies between how different OSes of the same type defines their macros.*/
-#if defined(unix) || defined(__unix__) || defined(__unix)
-#define OAL_IS_POSIX 1
-#if defined(__gnu_linux__)
-#define OAL_TARGET_OS OAL_OS_GNU_LINUX
-#elif defined(__FreeBSD__)
-#define OAL_TARGET_OS OAL_OS_FREEBSD
-#endif
-
-#elif defined(_WIN32)
-#define OAL_TARGET_OS OAL_OS_WINDOWS_NT
-#else
-#define OAL_TARGET_OS OAL_OS_OTHER
-#warning "Target OS not supported"
-#endif
-
+#include "os_type.h"
 
 #define WINDOWS_DIR_SEPERATOR '\\'
 #define POSIX_DIR_SEPERATOR '/'
@@ -51,8 +28,4 @@
 #else
 #define OS_DIR_SEPARATOR POSIX_DIR_SEPERATOR
 #define OTHER_OS_DIR_SEPARATOR WINDOWS_DIR_SEPERATOR
-#endif
-
-typedef int hide_iso_warning; /*This typedef removes the empty translation unit warning*/
-
 #endif

@@ -18,7 +18,6 @@
 */
 
 #include "os_type.h"
-#include "private_consts.h"
 
 enum OAL_os_type OAL_get_os_type(void)
 {

@@ -26,14 +26,35 @@
  * \brief Header containing various members related to OS types.
  */
 
+#define OAL_OS_GNU_LINUX 1
+#define OAL_OS_FREEBSD 2
+#define OAL_OS_WINDOWS_NT 3
+#define OAL_OS_OTHER 4
+
+/*Simplify the discrepancies between how different OSes of the same type defines their macros.*/
+#if defined(unix) || defined(__unix__) || defined(__unix)
+#define OAL_IS_POSIX 1
+#endif
+
+#if defined(__gnu_linux__)
+#define OAL_TARGET_OS OAL_OS_GNU_LINUX
+#elif defined(__FreeBSD__)
+#define OAL_TARGET_OS OAL_OS_FREEBSD
+#elif defined(_WIN32)
+#define OAL_TARGET_OS OAL_OS_WINDOWS_NT
+#else
+#define OAL_TARGET_OS OAL_OS_OTHER
+#warning "Target OS not supported"
+#endif
+
 /*!
  * \brief Values corresponding to various OS.
  */
 enum OAL_os_type {
-	OAL_OS_TYPE_GNU_LINUX,
-	OAL_OS_TYPE_FREEBSD,
-	OAL_OS_TYPE_WINDOWS_NT,
-	OAL_OS_TYPE_OTHER
+	OAL_OS_TYPE_GNU_LINUX = OAL_OS_GNU_LINUX,
+	OAL_OS_TYPE_FREEBSD = OAL_OS_FREEBSD,
+	OAL_OS_TYPE_WINDOWS_NT = OAL_OS_WINDOWS_NT,
+	OAL_OS_TYPE_OTHER = OAL_OS_OTHER
 };
 
 /*!

@@ -17,7 +17,7 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "private_consts.h"
+#include "os_type.h"
 
 #if defined(OAL_IS_POSIX)
 

@@ -23,7 +23,6 @@
 
 #include "os_string.h"
 #include "os_type.h"
-#include "private_consts.h"
 
 char *OAL_strdup(const char *src)
 {
