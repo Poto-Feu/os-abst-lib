@@ -29,6 +29,7 @@
 
 #include "os_paths.h"
 #include "os_dir.h"
+#include "private_consts.h"
 
 int OAL_get_USER_DATA_PATH(char *buffer, size_t size)
 {
