@@ -20,26 +20,26 @@
 #ifndef OS_FILE_H
 #define OS_FILE_H
 
-/*!
- * \file os_dir.h
+/**
+ * @file os_file.h
  *
- * \brief File-related OS functions.
+ * @brief File-related OS functions.
  */
 
-/*!
- * \brief Check if a file (including directories) exists.
+/**
+ * @brief Check if a file (including directories) exists.
  *
- * \param path The path to the file to check
- * \return 0 if the file exists,
+ * @param path The path to the file to check
+ * @return 0 if the file exists,
  * a non-zero value if it does not
  */
 int OAL_file_exists(const char *path);
 
-/*!
- * \brief Remove a file.
+/**
+ * @brief Remove a file.
  *
- * \param path The path to the file to remove
- * \return 0 if the file was succesfully removed
+ * @param path The path to the file to remove
+ * @return 0 if the file was succesfully removed,
  * a non-zero value if an error occured
  */
 int OAL_remove_file(const char *path);

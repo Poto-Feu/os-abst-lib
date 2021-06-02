@@ -20,20 +20,39 @@
 #ifndef OS_TYPE_H
 #define OS_TYPE_H
 
-/*!
- * \file os_type.h
+/**
+ * @file os_type.h
  *
- * \brief Header containing various members related to OS types.
+ * @brief Header containing various members related to OS types.
  */
 
+/**
+ * @brief GNU/Linux value for OAL_TARGET_OS.
+ */
 #define OAL_OS_GNU_LINUX 1
+/**
+ * @brief FreeBSD value for OAL_TARGET_OS.
+ */
 #define OAL_OS_FREEBSD 2
+/**
+ * @brief Windows NT value for OAL_TARGET_OS.
+ */
 #define OAL_OS_WINDOWS_NT 3
+/**
+ * @brief Value corresponding to an unknown OS for OAL_TARGET_OS.
+ */
 #define OAL_OS_OTHER 4
 
-/*Simplify the discrepancies between how different OSes of the same type defines their macros.*/
-#if defined(unix) || defined(__unix__) || defined(__unix)
+/**
+ * @brief Denotes wether the user OS is POSIX.
+ *
+ * If it is not defined, the user OS is not POSIX.
+ */
 #define OAL_IS_POSIX 1
+
+/*Simplify the discrepancies between how different OSes of the same type defines their macros.*/
+#if !defined(unix) && !defined(__unix__) && !defined(__unix)
+#undef OAL_IS_POSIX
 #endif
 
 #if defined(__gnu_linux__)
@@ -43,12 +62,19 @@
 #elif defined(_WIN32)
 #define OAL_TARGET_OS OAL_OS_WINDOWS_NT
 #else
+/**
+ * @brief Macro indicating which OS the user is currently using.
+ *
+ * @sa OAL_get_os_type(void)
+ */
 #define OAL_TARGET_OS OAL_OS_OTHER
 #warning "Target OS not supported"
 #endif
 
-/*!
- * \brief Values corresponding to various OS.
+/**
+ * @brief Enum values corresponding to various OSes.
+ *
+ * These can be fetch with the OAL_get_os_type(void) function.
  */
 enum OAL_os_type {
 	OAL_OS_TYPE_GNU_LINUX = OAL_OS_GNU_LINUX,
@@ -57,18 +83,21 @@ enum OAL_os_type {
 	OAL_OS_TYPE_OTHER = OAL_OS_OTHER
 };
 
-/*!
- * \brief Fetch the user's OS type
+/**
+ * @brief Fetch the user's OS type
  *
- * \see os_type_t
- * \return The corresponding os_type_t enum value
+ * OAL_TARGET_OS can also be used for compile-time conditions.
+ *
+ * @return The corresponding OAL_os_type enum value
+ *
+ * @sa OAL_TARGET_OS
  */
 enum OAL_os_type OAL_get_os_type(void);
 
-/*!
- * \brief Check wether or not the user's OS is POSIX.
+/**
+ * @brief Check wether or not the user's OS is POSIX.
  *
- * \return 0 if the OS is POSIX compatible,
+ * @return 0 if the OS is POSIX compatible,
  * a non-zero value if it is not
  */
 int OAL_is_os_posix(void);

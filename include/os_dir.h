@@ -22,19 +22,19 @@
 
 #include <stddef.h>
 
-/*!
- * \file os_dir.h
+/**
+ * @file os_dir.h
  *
- * \brief Directory-related OS functions.
+ * @brief Directory-related OS functions.
  */
 
-/*!
- * \brief Create a directory to the specified path.
+/**
+ * @brief Create a directory to the specified path.
  *
  * The creation of the directory can be recursive. The slashes are automatically converted to the
  * OS native ones.
  *
- * \return 0 if the folder was successfully created (or already existed),
+ * @return 0 if the folder was successfully created (or already existed),
  * a non-zero value if an error occured
  */
 int OAL_create_directory(const char *path);

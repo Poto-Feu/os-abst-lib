@@ -22,15 +22,24 @@
 
 #include <stddef.h>
 
-/*!
- * \brief An implementation of the POSIX function strdup.
+/**
+ * @file os_string.h
+ *
+ * @brief String-related functions.
+ *
+ * This header provides functions that are mostly part of the POSIX specifictation but not the
+ * C99 standard. This makes these functions available on systems such as Windows NT.
+ */
+
+/**
+ * @brief An implementation of the POSIX function strdup.
  *
  * If the program is running on a POSIX OS, the function calls the native strdup.
  * The returned string must be freed to avoid memory leaks.
  * 
- * \param src char pointer to the source string
+ * @param src char pointer to the source string
  *
- * \return a pointer to the duplicated string,
+ * @return a pointer to the duplicated string,
  * NULL if the memory could not be allocated
  */
 char *OAL_strdup(const char *src);
