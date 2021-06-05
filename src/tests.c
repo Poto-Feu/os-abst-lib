@@ -30,7 +30,8 @@ int main(void)
 	size_t max_filepath_length = OAL_get_max_filepath_length();
 	size_t exec_dir_length = OAL_get_executable_directory_length();
 	size_t work_dir_length = OAL_get_working_directory_length();
-	size_t user_data_path_length = OAL_get_USER_DATA_PATH_length();
+	size_t user_data_path_length = OAL_get_user_data_path_length();
+	size_t wrong_user_data_path_length = 3;
 	assert(max_filepath_length != 0);
 	assert(exec_dir_length != 0);
 	assert(work_dir_length != 0);
@@ -49,11 +50,12 @@ int main(void)
 	assert(OAL_file_exists("test_dir2\\test_dir_sub/") == 0);
 	assert(OAL_get_executable_directory(exec_dir, exec_dir_length) == 0);
 	assert(OAL_get_working_directory(working_dir, work_dir_length) == 0);
-	assert(OAL_get_USER_DATA_PATH(user_data_path, user_data_path_length) == 0);
+	assert(OAL_get_user_data_path(user_data_path, user_data_path_length) == 0);
+	assert(OAL_get_user_data_path(user_data_path, wrong_user_data_path_length) != 0);
 
 	printf("executable directory: %s\n", exec_dir);
 	printf("working directory: %s\n", working_dir);
-	printf("USER_DATA_PATH: %s\n", user_data_path);
+	printf("user data path: %s\n", user_data_path);
 	free(exec_dir);
 	free(working_dir);
 	free(user_data_path);

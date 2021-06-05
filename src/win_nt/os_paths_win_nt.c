@@ -31,10 +31,9 @@
 #include "os_dir.h"
 #include "private_consts.h"
 
-int OAL_get_USER_DATA_PATH(char *buffer, size_t size)
+int OAL_get_user_data_path(char *buffer, size_t size)
 {
 	const char *LOCALAPPDATA_env = getenv("LOCALAPPDATA");
-	size_t path_len = OAL_get_USER_DATA_PATH_length();
 
 	if(!buffer) {
 		errno = EFAULT;
@@ -42,16 +41,16 @@ int OAL_get_USER_DATA_PATH(char *buffer, size_t size)
 	} else if(size == 0) {
 		errno = EINVAL;
 		return -1;
-	} else if(!LOCALAPPDATA_env || path_len == 0) return -1;
-	else if(size < path_len) return -1;
+	} else if(!LOCALAPPDATA_env) return -1;
 
-	strcpy(buffer, LOCALAPPDATA_env);
-	buffer[path_len - 2] = OS_DIR_SEPARATOR;
-	buffer[path_len - 1] = '\0';
+	strncpy(buffer, LOCALAPPDATA_env, size);
+	if(buffer[size - 1] != '\0' || buffer[size - 2] != '\0') return -1;
+
+	buffer[strlen(buffer)] = OS_DIR_SEPARATOR;
 	return 0;
 }
 
-size_t OAL_get_USER_DATA_PATH_length(void)
+size_t OAL_get_user_data_path_length(void)
 {
 	const char *LOCALAPPDATA_env = getenv("LOCALAPPDATA");
 
@@ -79,9 +78,8 @@ int OAL_get_executable_path(char *buffer, size_t size)
 
 size_t OAL_get_max_filepath_length(void)
 {
-	/*Long file paths are not supported - not a big deal since they are not enabled by default*/
+	/* Long file paths are not supported - not a big deal since they are not enabled by default. */
 	return 260; 
-				  
 }
 
 #endif

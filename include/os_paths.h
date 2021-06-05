@@ -110,7 +110,7 @@ size_t OAL_get_max_filepath_length(void);
  * @return 0 if the string was successfully copied,
  * a non-zero value if an error occured.
  */
-int OAL_get_USER_DATA_PATH(char *buffer, size_t size);
+int OAL_get_user_data_path(char *buffer, size_t size);
 
 /*!
  * @brief Return the user data path length (including the null terminator)
@@ -118,6 +118,6 @@ int OAL_get_USER_DATA_PATH(char *buffer, size_t size);
  * @return The path length if successful,
  * 0 if an error occured.
  */
-size_t OAL_get_USER_DATA_PATH_length(void);
+size_t OAL_get_user_data_path_length(void);
 
 #endif
