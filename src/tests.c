@@ -31,7 +31,11 @@ int main(void)
 	size_t exec_dir_length = OAL_get_executable_directory_length();
 	size_t work_dir_length = OAL_get_working_directory_length();
 	size_t user_data_path_length = OAL_get_user_data_path_length();
-	size_t wrong_user_data_path_length = 3;
+	size_t wrong_user_data_path_length = 2;
+	char *exec_dir = calloc(max_filepath_length, sizeof(char));
+	char *working_dir = calloc(work_dir_length, sizeof(char));
+	char *user_data_path = calloc(user_data_path_length, sizeof(char));
+
 	assert(max_filepath_length != 0);
 	assert(exec_dir_length != 0);
 	assert(work_dir_length != 0);
@@ -39,18 +43,19 @@ int main(void)
 	printf("exec_dir_length: %zu\n", exec_dir_length);
 	printf("work_dir_length: %zu\n", work_dir_length);
 	printf("user_data_path_length: %zu\n", user_data_path_length);
-	char *exec_dir = calloc(max_filepath_length, sizeof(char));
-	char *working_dir = calloc(work_dir_length, sizeof(char));
-	char *user_data_path = calloc(user_data_path_length, sizeof(char));
 
 	assert(OAL_create_directory("test_dir/test_dir_sub/") == 0);
 	assert(OAL_create_directory("test_dir2/test_dir_sub") == 0);
 	assert(OAL_create_directory("test_dir3\\test_dir_sub") == 0);
 	assert(OAL_file_exists("test_dir58/test_dir_sub/") != 0);
 	assert(OAL_file_exists("test_dir2\\test_dir_sub/") == 0);
+
 	assert(OAL_get_executable_directory(exec_dir, exec_dir_length) == 0);
 	assert(OAL_get_working_directory(working_dir, work_dir_length) == 0);
 	assert(OAL_get_user_data_path(user_data_path, user_data_path_length) == 0);
+
+	assert(OAL_get_executable_directory(exec_dir, wrong_user_data_path_length) != 0);
+	assert(OAL_get_working_directory(working_dir, wrong_user_data_path_length) != 0);
 	assert(OAL_get_user_data_path(user_data_path, wrong_user_data_path_length) != 0);
 
 	printf("executable directory: %s\n", exec_dir);
