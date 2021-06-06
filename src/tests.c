@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <OsAbstLib/OsAbstLib.h>
+#include "OsAbstLib.h"
 
 /* Code style rules are greatly relaxed for writing tests */
 int main(void)

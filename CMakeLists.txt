@@ -29,6 +29,7 @@ if(ENABLE_TESTS)
         src/tests.c)
 
     target_link_libraries(OAL-tests OsAbstLib)
+    target_include_directories(OAL-tests PRIVATE include)
 endif()
 
 target_include_directories(OsAbstLib PRIVATE src)
