@@ -19,6 +19,7 @@
 
 #include <sys/types.h>
 #include <errno.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -69,6 +70,7 @@ int OAL_get_executable_directory(char *buffer, size_t size)
 	ssize_t final_slash_pos = -1;
 	size_t exec_path_length = OAL_get_max_filepath_length();
 	char *exec_path;
+	bool is_NUL_encountered = false;
 	
 	if(!buffer) {
 		errno = EFAULT;
@@ -85,11 +87,16 @@ int OAL_get_executable_directory(char *buffer, size_t size)
 		return -1;
 	}
 
-	for(size_t i = 0; i < size && exec_path[i] != '\0'; ++i) {
+	/* We search the last slash of the path to find the length of the part of the strings that will
+	 * be copied. */
+	for(size_t i = 0; i < exec_path_length && !is_NUL_encountered; ++i) {
 		if(exec_path[i] == OS_DIR_SEPARATOR) final_slash_pos = i;
+		else if(exec_path[i] == '\0') is_NUL_encountered = true;
 	}
 
-	if(final_slash_pos == -1) {
+	/* We don't need to care about the side effects of the size_t cast as the only possible negative
+	 * value is -1 and it is already taken into account. */
+	if(final_slash_pos == -1 || (size_t)final_slash_pos > size - 2) {
 		free(exec_path);
 		return -1;
 	} else {

@@ -71,8 +71,12 @@ int OAL_get_executable_path(char *buffer, size_t size)
 		return -1;
 	}
 
+	/* If GetModuleFileNameA fails, it returns 0. If the buffer is too small, it returns the
+	 * specified size. However, if the path is fully copied into the buffer, the function returns
+	 * the path length minus the NUL terminator. With a buffer large enough to contain the NUL
+	 * terminator, it will not return "size". */
 	path_end_index = GetModuleFileNameA(NULL, buffer, size);
-	if(path_end_index != 0) return 0;
+	if(path_end_index != 0 && path_end_index != size) return 0;
 	else return -1;
 }
 
