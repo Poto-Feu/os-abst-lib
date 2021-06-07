@@ -46,9 +46,8 @@ endif()
 set_target_properties(OsAbstLib PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(OsAbstLib PROPERTIES SOVERSION 0.1)
 
-set_target_properties(OsAbstLib PROPERTIES PUBLIC_HEADER "include/OsAbstLib.h;\
-include/os_dir.h;include/os_file.h;include/os_paths.h;include/os_string.h;\
-include/os_type.h")
+set_target_properties(OsAbstLib PROPERTIES PUBLIC_HEADER "include/OsAbstLib.h;include/OAL_flags.h;\
+include/os_dir.h;include/os_file.h;include/os_paths.h;include/os_string.h;include/os_type.h")
 
 include(GNUInstallDirs)
 
