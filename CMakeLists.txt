@@ -4,6 +4,7 @@ project(OsAbstLib VERSION 0.1)
 
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "Release")
+	message(STATUS "CMAKE_BUILD_TYPE not set - defaulting to Release")
 endif()
 
 set(CMAKE_C_STANDARD 99)
