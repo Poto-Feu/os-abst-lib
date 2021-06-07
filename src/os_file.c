@@ -31,9 +31,7 @@
 #include "private_consts.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-
 #define stat _stat
-
 #endif
 
 int OAL_file_exists(const char *path)

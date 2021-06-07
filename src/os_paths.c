@@ -32,7 +32,6 @@
 #include <direct.h>
 
 #define getcwd _getcwd
-
 #endif
 
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD \
@@ -119,7 +118,6 @@ size_t OAL_get_executable_directory_length(void)
 		return 0;
 	}
 }
-
 #else
 #warning "OAL_get_executable_directory is not available on your system"
 #endif

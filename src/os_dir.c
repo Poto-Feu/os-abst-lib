@@ -30,16 +30,14 @@
 #include "private_funcs.h"
 #include "private_consts.h"
 
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#if defined(OAL_IS_POSIX)
+#include <unistd.h>
+
+#elif OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 #include <direct.h>
 
 #define getcwd _getcwd
 #define mkdir(x, y) _mkdir(x)
-
-#elif defined(OAL_IS_POSIX)
-
-#include <unistd.h>
-
 #endif
 
 static int OAL_create_non_recursive_directory(const char *path)
