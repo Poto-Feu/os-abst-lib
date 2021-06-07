@@ -28,13 +28,6 @@
  * @brief Paths-related OS functions.
  */
 
-/**
- * @brief Replace path directory separators with native ones.
- * 
- * @param path path where the separators should be replaced
- */
-void OAL_replace_dir_separator_to_native(char *path);
-
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD \
 				   || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 /**

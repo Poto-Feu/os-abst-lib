@@ -17,56 +17,14 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
-#include "os_file.h"
-#include "os_paths.h"
-#include "os_string.h"
 #include "private_funcs.h"
 #include "private_consts.h"
 
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-
-#define stat _stat
-
-#endif
-
-int OAL_file_exists(const char *path)
+bool OAL_is_dir_separator(char ch)
 {
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	struct _stat buf;
+	return (ch == WINDOWS_DIR_SEPARATOR || ch == POSIX_DIR_SEPARATOR);
 #else
-	struct stat buf;
+	return (ch == POSIX_DIR_SEPARATOR);
 #endif
-	int rtrn_val;
-
-	if(!path) {
-		errno = EFAULT;
-		return -1;
-	}
-
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	rtrn_val = _stat(path, &buf);
-#else
-	rtrn_val = stat(path, &buf);
-#endif
-	return rtrn_val;
-}
-
-int OAL_remove_file(const char *path)
-{
-	int remove_rtrn;
-
-	if(!path) {
-		errno = EFAULT;
-		return -1;
-	}
-	remove_rtrn = remove(path);
-
-	return remove_rtrn;
 }

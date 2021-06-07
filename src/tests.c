@@ -46,9 +46,9 @@ int main(void)
 
 	assert(OAL_create_directory("test_dir/test_dir_sub/") == 0);
 	assert(OAL_create_directory("test_dir2/test_dir_sub") == 0);
-	assert(OAL_create_directory("test_dir3\\test_dir_sub") == 0);
+	assert(OAL_create_directory("test_dir3/test_dir_sub") == 0);
 	assert(OAL_file_exists("test_dir58/test_dir_sub/") != 0);
-	assert(OAL_file_exists("test_dir2\\test_dir_sub/") == 0);
+	assert(OAL_file_exists("test_dir2/test_dir_sub/") == 0);
 
 	assert(OAL_get_executable_directory(exec_dir, exec_dir_length) == 0);
 	assert(OAL_get_working_directory(working_dir, work_dir_length) == 0);

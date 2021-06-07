@@ -31,8 +31,7 @@
 /**
  * @brief Create a directory to the specified path.
  *
- * The creation of the directory can be recursive. The slashes are automatically converted to the
- * OS native ones.
+ * The creation of the directory can be recursive.
  *
  * @return 0 if the folder was successfully created (or already existed),
  * a non-zero value if an error occured

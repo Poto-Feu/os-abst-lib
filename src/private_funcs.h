@@ -17,13 +17,11 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "os_type.h"
+#ifndef PRIVATE_FUNCS_H
+#define PRIVATE_FUNCS_H
 
-#define WINDOWS_DIR_SEPARATOR '\\'
-#define POSIX_DIR_SEPARATOR '/'
+#include <stdbool.h>
 
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-#define OS_DIR_SEPARATOR WINDOWS_DIR_SEPARATOR
-#else
-#define OS_DIR_SEPARATOR POSIX_DIR_SEPARATOR
+bool OAL_is_dir_separator(char ch);
+
 #endif

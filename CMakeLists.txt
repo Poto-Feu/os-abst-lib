@@ -16,13 +16,14 @@ else()
 endif()
 
 add_library(OsAbstLib SHARED
-    src/unix/os_paths_unix.c
-    src/win_nt/os_paths_win_nt.c
-    src/os_dir.c
-    src/os_file.c
-    src/os_paths.c
-    src/os_string.c
-    src/os_type.c)
+	src/unix/os_paths_unix.c
+	src/win_nt/os_paths_win_nt.c
+	src/os_dir.c
+	src/os_file.c
+	src/os_paths.c
+	src/os_string.c
+	src/os_type.c
+	src/private_funcs.c)
 
 if(ENABLE_TESTS)
     add_executable(OAL-tests
