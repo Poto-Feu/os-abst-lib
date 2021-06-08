@@ -35,11 +35,15 @@ int main(void)
 	char *exec_dir = calloc(max_filepath_length, sizeof(char));
 	char *working_dir = calloc(work_dir_length, sizeof(char));
 	char *user_data_path = calloc(user_data_path_length, sizeof(char));
+	char *test_strdup_str = OAL_strdup("test string strdup");
 
 	assert(max_filepath_length != 0);
 	assert(exec_dir_length != 0);
 	assert(work_dir_length != 0);
 	assert(user_data_path_length != 0);
+	assert(test_strdup_str);
+
+	free(test_strdup_str);
 	printf("exec_dir_length: %zu\n", exec_dir_length);
 	printf("work_dir_length: %zu\n", work_dir_length);
 	printf("user_data_path_length: %zu\n", user_data_path_length);

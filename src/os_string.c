@@ -24,15 +24,17 @@
 #include "os_string.h"
 #include "os_type.h"
 
+#if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#include "OAL_flags.h"
+
+extern OAL_FORCEINLINE char *OAL_strdup(const char *src);
+#else
 char *OAL_strdup(const char *src)
 {
 	if(!src) {
 		errno = EFAULT;
 		return NULL;
 	}
-#ifdef OAL_IS_POSIX
-	return strdup(src);
-#else
 	char *str;
 
 	str = malloc((strlen(src) + 1) * sizeof(char));
@@ -41,5 +43,5 @@ char *OAL_strdup(const char *src)
 	strcpy(str, src);
 
 	return str;
-#endif
 }
+#endif
