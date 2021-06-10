@@ -9,6 +9,7 @@ endif()
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Wall -Wextra -pedantic -Wstrict-prototypes -Wvla)
@@ -55,7 +56,6 @@ install(TARGETS OsAbstLib
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/OsAbstLib)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_custom_target(
 	copy-compile-commands ALL
 	${CMAKE_COMMAND} -E copy_if_different
