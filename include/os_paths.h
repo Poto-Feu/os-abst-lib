@@ -28,6 +28,8 @@
  * @file os_paths.h
  *
  * @brief Paths-related OS functions.
+ *
+ * All returned paths are null-terminated except if the supplied buffer is too small.
  */
 
 /* You might think that these abbreviations are overkill. However, the C99 standard indicates that
@@ -48,7 +50,7 @@
 int OAL_get_executable_path(char *buffer, size_t size);
 
 /**
- * @brief Return the executable path length (including the null terminator).
+ * @brief Return the executable path length.
  *
  * @return The path length if successful,
  * 0 if an error occured.
@@ -67,7 +69,7 @@ size_t OAL_get_executable_path_len(void);
 int OAL_get_executable_dir(char *buffer, size_t size);
 
 /**
- * @brief Return the executable directory path length (including the null terminator)
+ * @brief Return the executable directory path length.
  *
  * @return The path length if successful,
  * 0 if an error occured.
@@ -88,7 +90,7 @@ size_t OAL_get_executable_dir_len(void);
 int OAL_get_working_dir(char *buffer, size_t size);
 
 /**
- * @brief Return the user working directory path length (including the null terminator)
+ * @brief Return the user working directory path length.
  *
  * @return The path length if there was no error,
  * 0 if an error occured.
@@ -116,7 +118,7 @@ size_t OAL_get_max_filepath_len(void);
 int OAL_get_user_data_dir(char *buffer, size_t size);
 
 /**
- * @brief Return the user data directory path length (including the null terminator)
+ * @brief Return the user data directory path length.
  *
  * @return The path length if successful,
  * 0 if an error occured.
