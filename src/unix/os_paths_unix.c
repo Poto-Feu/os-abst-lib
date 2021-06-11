@@ -102,7 +102,7 @@ int OAL_get_executable_path(char *buffer, size_t size)
 	if(!buffer) {
 		errno = EFAULT;
 		return -1;
-	} else if(size == 0) {
+	} else if(size == 0 || size == 1) {
 		errno = EINVAL;
 		return -1;
 	}

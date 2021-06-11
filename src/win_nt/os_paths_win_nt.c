@@ -38,7 +38,7 @@ int OAL_get_user_data_dir(char *buffer, size_t size)
 	if(!buffer) {
 		errno = EFAULT;
 		return -1;
-	} else if(size == 0) {
+	} else if(size == 0 || size == 1) {
 		errno = EINVAL;
 		return -1;
 	} else if(!LOCALAPPDATA_env) return -1;

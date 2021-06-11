@@ -31,7 +31,6 @@ int main(void)
 	size_t exec_dir_len = OAL_get_executable_dir_len();
 	size_t work_dir_len = OAL_get_working_dir_len();
 	size_t user_data_dir_len = OAL_get_user_data_dir_len();
-	size_t wrong_dir_len = 2;
 	char *exec_dir = calloc(max_filepath_len, sizeof(char));
 	char *working_dir = calloc(work_dir_len, sizeof(char));
 	char *user_data_dir = calloc(user_data_dir_len, sizeof(char));
@@ -58,9 +57,11 @@ int main(void)
 	assert(OAL_get_working_dir(working_dir, work_dir_len) == 0);
 	assert(OAL_get_user_data_dir(user_data_dir, user_data_dir_len) == 0);
 
-	assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
-	assert(OAL_get_working_dir(working_dir, wrong_dir_len) != 0);
-	assert(OAL_get_user_data_dir(user_data_dir, wrong_dir_len) != 0);
+	for(unsigned int wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
+		assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
+		assert(OAL_get_working_dir(working_dir, wrong_dir_len) != 0);
+		assert(OAL_get_user_data_dir(user_data_dir, wrong_dir_len) != 0);
+	}
 
 	printf("executable directory: %s\n", exec_dir);
 	printf("working directory: %s\n", working_dir);
