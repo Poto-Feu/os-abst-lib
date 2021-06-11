@@ -31,7 +31,7 @@
 #include "os_dir.h"
 #include "private_consts.h"
 
-int OAL_get_user_data_path(char *buffer, size_t size)
+int OAL_get_user_data_dir(char *buffer, size_t size)
 {
 	const char *LOCALAPPDATA_env = getenv("LOCALAPPDATA");
 
@@ -50,7 +50,7 @@ int OAL_get_user_data_path(char *buffer, size_t size)
 	return 0;
 }
 
-size_t OAL_get_user_data_path_length(void)
+size_t OAL_get_user_data_dir_len(void)
 {
 	const char *LOCALAPPDATA_env = getenv("LOCALAPPDATA");
 
@@ -80,10 +80,9 @@ int OAL_get_executable_path(char *buffer, size_t size)
 	else return -1;
 }
 
-size_t OAL_get_max_filepath_length(void)
+size_t OAL_get_max_filepath_len(void)
 {
 	/* Long file paths are not supported - not a big deal since they are not enabled by default. */
 	return 260; 
 }
-
 #endif

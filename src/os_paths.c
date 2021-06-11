@@ -36,9 +36,9 @@
 
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD \
 				   || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-size_t OAL_get_executable_path_length(void)
+size_t OAL_get_executable_path_len(void)
 {
-	size_t max_filepath_length = OAL_get_max_filepath_length();
+	size_t max_filepath_length = OAL_get_max_filepath_len();
 	char *exec_path;
 
 	if(max_filepath_length == 0) return 0;
@@ -56,10 +56,10 @@ size_t OAL_get_executable_path_length(void)
 	}
 }
 
-int OAL_get_executable_directory(char *buffer, size_t size)
+int OAL_get_executable_dir(char *buffer, size_t size)
 {
 	ssize_t final_slash_pos = -1;
-	size_t exec_path_length = OAL_get_max_filepath_length();
+	size_t exec_path_length = OAL_get_max_filepath_len();
 	char *exec_path;
 	bool is_NUL_encountered = false;
 	
@@ -99,16 +99,16 @@ int OAL_get_executable_directory(char *buffer, size_t size)
 	}
 }
 
-size_t OAL_get_executable_directory_length(void)
+size_t OAL_get_executable_dir_len(void)
 {
-	size_t max_filepath_length = OAL_get_max_filepath_length();
+	size_t max_filepath_length = OAL_get_max_filepath_len();
 	char *exec_dir;
 
 	if(max_filepath_length == 0) return 0;
 	exec_dir = malloc(max_filepath_length * sizeof(char));
 	if(!exec_dir) return 0;
 
-	if(OAL_get_executable_directory(exec_dir, max_filepath_length) == 0) {
+	if(OAL_get_executable_dir(exec_dir, max_filepath_length) == 0) {
 		size_t path_length = strlen(exec_dir);
 
 		free(exec_dir);
@@ -122,7 +122,7 @@ size_t OAL_get_executable_directory_length(void)
 #warning "OAL_get_executable_directory is not available on your system"
 #endif
 
-int OAL_get_working_directory(char *buffer, size_t size)
+int OAL_get_working_dir(char *buffer, size_t size)
 {
 	if(!buffer) {
 		errno = EFAULT;
@@ -143,16 +143,16 @@ int OAL_get_working_directory(char *buffer, size_t size)
 	return 0;
 }
 
-size_t OAL_get_working_directory_length(void)
+size_t OAL_get_working_dir_len(void)
 {
-	size_t max_filepath_length = OAL_get_max_filepath_length();
+	size_t max_filepath_length = OAL_get_max_filepath_len();
 	char *working_dir;
 
 	if(max_filepath_length == 0) return 0;
 	working_dir = malloc(max_filepath_length * sizeof(char));
 	if(!working_dir) return 0;
 
-	if(OAL_get_working_directory(working_dir, max_filepath_length) == 0) {
+	if(OAL_get_working_dir(working_dir, max_filepath_length) == 0) {
 		size_t path_length = strlen(working_dir);
 
 		free(working_dir);

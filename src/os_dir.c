@@ -40,7 +40,7 @@
 #define mkdir(x, y) _mkdir(x)
 #endif
 
-static int OAL_create_non_recursive_directory(const char *path)
+static int OAL_create_non_recursive_dir(const char *path)
 {
 	if(!path) {
 		errno = EFAULT;
@@ -51,7 +51,7 @@ static int OAL_create_non_recursive_directory(const char *path)
 	} else return 0;
 }
 
-int OAL_create_directory(const char *path)
+int OAL_create_dir(const char *path)
 {
 	if(!path) {
 		errno = EFAULT;
@@ -68,7 +68,7 @@ int OAL_create_directory(const char *path)
 				current_directory[i + 1] = '\0';
 				if(OAL_is_dir_separator(current_directory[i])) current_directory[i] = '\0';
 
-				rtrn_val = OAL_create_non_recursive_directory(current_directory);
+				rtrn_val = OAL_create_non_recursive_dir(current_directory);
 				free(current_directory);
 
 				return rtrn_val;
@@ -85,7 +85,7 @@ int OAL_create_directory(const char *path)
 			current_directory[i] = '\0';
 
 			if(OAL_file_exists(current_directory) != 0) {
-				if(OAL_create_non_recursive_directory(current_directory) != 0) {
+				if(OAL_create_non_recursive_dir(current_directory) != 0) {
 					free(current_directory);
 					return -1;
 				}

@@ -41,7 +41,7 @@ const char *const user_data_dir_suffix = "/.local/share/";
 
 /* The XDG Base Directory Specs specifies that $HOME/.local/share should be used if the
  * XDG_DATA_HOME environment variable is not set. */
-static int OAL_get_user_data_path_no_env(char *buffer, size_t size)
+static int OAL_get_user_data_dir_no_env(char *buffer, size_t size)
 {
 	const char *HOME_env = getenv("HOME");
 	size_t path_len;
@@ -64,7 +64,7 @@ static int OAL_get_user_data_path_no_env(char *buffer, size_t size)
 	return 0;
 }
 
-int OAL_get_user_data_path(char *buffer, size_t size)
+int OAL_get_user_data_dir(char *buffer, size_t size)
 {
 	const char *XDG_DATA_HOME_env = getenv("XDG_DATA_HOME");
 
@@ -77,10 +77,10 @@ int OAL_get_user_data_path(char *buffer, size_t size)
 
 		buffer[strlen(buffer)] = OS_DIR_SEPARATOR;
 		return 0;
-	} else return OAL_get_user_data_path_no_env(buffer, size);
+	} else return OAL_get_user_data_dir_no_env(buffer, size);
 }
 
-size_t OAL_get_user_data_path_length(void)
+size_t OAL_get_user_data_dir_len(void)
 {
 	const char *XDG_DATA_HOME_env = getenv("XDG_DATA_HOME");
 
@@ -133,17 +133,15 @@ int OAL_get_executable_path(char *buffer, size_t size)
 	} else return -1;
 #endif
 }
-
 #else
 #warning "OAL_get_executable_path is not available on your system"
 #endif
 
-size_t OAL_get_max_filepath_length(void)
+size_t OAL_get_max_filepath_len(void)
 {
 	ssize_t pathconf_rtrn = pathconf("/", _PC_PATH_MAX);
 
 	if(pathconf_rtrn < 0) return 0;
 	return (size_t)pathconf_rtrn;
 }
-
 #endif

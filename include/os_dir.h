@@ -36,6 +36,6 @@
  * @return 0 if the folder was successfully created (or already existed),
  * a non-zero value if an error occured
  */
-int OAL_create_directory(const char *path);
+int OAL_create_dir(const char *path);
 
 #endif
