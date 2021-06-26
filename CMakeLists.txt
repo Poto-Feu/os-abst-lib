@@ -18,7 +18,9 @@ else()
 endif()
 
 add_library(OsAbstLib SHARED
+	src/unix/os_dir_unix.c
 	src/unix/os_paths_unix.c
+	src/win_nt/os_dir_win_nt.c
 	src/win_nt/os_paths_win_nt.c
 	src/os_dir.c
 	src/os_file.c
