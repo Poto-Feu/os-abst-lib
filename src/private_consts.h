@@ -17,6 +17,9 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef PRIVATE_CONSTS_H
+#define PRIVATE_CONSTS_H
+
 #include "os_type.h"
 
 #define WINDOWS_DIR_SEPARATOR '\\'
@@ -26,4 +29,11 @@
 #define OS_DIR_SEPARATOR WINDOWS_DIR_SEPARATOR
 #else
 #define OS_DIR_SEPARATOR POSIX_DIR_SEPARATOR
+#endif
+
+extern const unsigned int false;
+extern const unsigned int true;
+
+typedef unsigned int bool;
+
 #endif

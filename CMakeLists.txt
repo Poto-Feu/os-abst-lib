@@ -27,6 +27,7 @@ add_library(OsAbstLib SHARED
 	src/os_paths.c
 	src/os_string.c
 	src/os_type.c
+	src/private_consts.c
 	src/private_funcs.c)
 
 if(ENABLE_TESTS)

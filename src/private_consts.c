@@ -17,13 +17,7 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "private_funcs.h"
+#include "private_consts.h"
 
-bool OAL_is_dir_separator(char ch)
-{
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	return (ch == WINDOWS_DIR_SEPARATOR || ch == POSIX_DIR_SEPARATOR);
-#else
-	return (ch == POSIX_DIR_SEPARATOR);
-#endif
-}
+const unsigned int false = 0;
+const unsigned int true = 1;

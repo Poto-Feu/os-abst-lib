@@ -19,14 +19,12 @@
 
 #include <sys/types.h>
 #include <errno.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #include "os_paths.h"
 #include "private_funcs.h"
-#include "private_consts.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 #include <direct.h>

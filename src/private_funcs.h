@@ -20,7 +20,7 @@
 #ifndef PRIVATE_FUNCS_H
 #define PRIVATE_FUNCS_H
 
-#include <stdbool.h>
+#include "private_consts.h"
 
 bool OAL_is_dir_separator(char ch);
 
