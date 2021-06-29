@@ -24,9 +24,34 @@
 
 #include "OsAbstLib.h"
 
+static void rmdir_recurs_relative(const char *dir)
+{
+	/* Ugly but it works and it's a test program so OK. */
+#ifdef OAL_IS_POSIX
+	const char *system_cmd = "rm -rf ";
+#elif OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+	const char *system_cmd = "rmdir /s /q ";
+#endif
+	char *full_system_cmd = malloc((strlen(system_cmd) + strlen(dir) + 1) *
+			sizeof(char));
+
+	strcpy(full_system_cmd, system_cmd);
+	strcat(full_system_cmd, dir);
+	/* "Y'know, don't say... swears" */
+	system(full_system_cmd);
+	free(full_system_cmd);
+}
+
 /* Code style rules are greatly relaxed for writing tests */
 int main(void)
 {
+	const char *dir_strs[] = {
+		"test_dir/test_dir_sub/",
+		"test_dir2/test_dir_sub",
+		"test_dir3/test_dir_sub"
+	};
+	const char *fake_dir_str = "test_dir58/test_dir_sub/";
+	const char *rendundant_dir_str = "test_dir2/test_dir_sub/";
 	size_t max_filepath_len = OAL_get_max_filepath_len();
 	size_t exec_dir_len = OAL_get_executable_dir_len();
 	size_t work_dir_len = OAL_get_working_dir_len();
@@ -47,11 +72,11 @@ int main(void)
 	printf("work_dir_length: %zu\n", work_dir_len);
 	printf("user_data_dir_length: %zu\n", user_data_dir_len);
 
-	assert(OAL_create_dir("test_dir/test_dir_sub/") == 0);
-	assert(OAL_create_dir("test_dir2/test_dir_sub") == 0);
-	assert(OAL_create_dir("test_dir3/test_dir_sub") == 0);
-	assert(OAL_file_exists("test_dir58/test_dir_sub/") != 0);
-	assert(OAL_file_exists("test_dir2/test_dir_sub/") == 0);
+	for(size_t i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
+		assert(OAL_create_dir(dir_strs[i]) == 0);
+	}
+	assert(OAL_file_exists(fake_dir_str) != 0);
+	assert(OAL_file_exists(rendundant_dir_str) == 0);
 
 	assert(OAL_get_executable_dir(exec_dir, exec_dir_len) == 0);
 	assert(OAL_get_working_dir(working_dir, work_dir_len) == 0);
@@ -61,6 +86,14 @@ int main(void)
 		assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
 		assert(OAL_get_working_dir(working_dir, wrong_dir_len) != 0);
 		assert(OAL_get_user_data_dir(user_data_dir, wrong_dir_len) != 0);
+	}
+	for(size_t i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
+		char *str_dup = OAL_strdup(dir_strs[i]);
+		char *slash_ptr = strchr(str_dup, '/');
+
+		*slash_ptr = '\0';
+		rmdir_recurs_relative(str_dup);
+		free(str_dup);
 	}
 
 	printf("executable directory: %s\n", exec_dir);
