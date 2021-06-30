@@ -23,6 +23,18 @@
 #include <unistd.h>
 
 #include "OsAbstLib.h"
+#include "private_consts.h"
+
+static bool create_empty_text_file(const char *path)
+{
+	FILE *text_file;
+
+	if(!(text_file = fopen(path, "w"))) return false;
+	else {
+		fclose(text_file);
+		return true;
+	}
+}
 
 static void rmdir_recurs_relative(const char *dir)
 {
@@ -49,6 +61,11 @@ int main(void)
 		"test_dir/test_dir_sub/",
 		"test_dir2/test_dir_sub",
 		"test_dir3/test_dir_sub"
+	};
+	const char *text_file_strs[] = {
+		"test_dir/text.txt",
+		"test_dir/text-2.txt",
+		"test_dir/text-3.txt",
 	};
 	const char *fake_dir_str = "test_dir58/test_dir_sub/";
 	const char *rendundant_dir_str = "test_dir2/test_dir_sub/";
@@ -77,6 +94,14 @@ int main(void)
 	}
 	assert(OAL_file_exists(fake_dir_str) != 0);
 	assert(OAL_file_exists(rendundant_dir_str) == 0);
+
+	for(size_t i = 0; i < sizeof(text_file_strs) / sizeof(text_file_strs[0]);
+			++i) {
+		assert(create_empty_text_file(text_file_strs[i]));
+	}
+
+	assert(OAL_get_dir_file_count("test_dir")
+			== sizeof(text_file_strs) / sizeof(text_file_strs[0]));
 
 	assert(OAL_get_executable_dir(exec_dir, exec_dir_len) == 0);
 	assert(OAL_get_working_dir(working_dir, work_dir_len) == 0);
