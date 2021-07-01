@@ -19,6 +19,8 @@
 
 #include "private_funcs.h"
 
+static OAL_error current_error = OAL_ERROR_NO_ERROR;
+
 bool OAL_is_dir_separator(char ch)
 {
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
@@ -26,4 +28,14 @@ bool OAL_is_dir_separator(char ch)
 #else
 	return (ch == POSIX_DIR_SEPARATOR);
 #endif
+}
+
+void p_set_error(OAL_error error)
+{
+	current_error = error;
+}
+
+OAL_error p_get_current_error(void)
+{
+	return current_error;
 }

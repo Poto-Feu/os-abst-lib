@@ -21,7 +21,10 @@
 #define PRIVATE_FUNCS_H
 
 #include "private_consts.h"
+#include "OAL_error.h"
 
 bool OAL_is_dir_separator(char ch);
 
+void p_set_error(OAL_error error);
+OAL_error p_get_current_error(void);
 #endif

@@ -29,6 +29,7 @@
  * data path.
  */
 
+#include "OAL_error.h"
 #include "os_dir.h"
 #include "os_file.h"
 #include "os_paths.h"
