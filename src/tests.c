@@ -26,6 +26,25 @@
 #include "OsAbstLib.h"
 #include "private_consts.h"
 
+static void test_errors(void)
+{
+	size_t max_filepath_len = OAL_get_max_filepath_len();
+	char *exec_dir = calloc(max_filepath_len, sizeof(char));
+
+	assert(OAL_get_executable_dir(NULL, max_filepath_len) != 0);
+	assert(OAL_get_last_error() == OAL_ERROR_NULL_PTR);
+	assert(OAL_get_executable_dir(exec_dir, 4) != 0);
+	assert(OAL_get_last_error() == OAL_ERROR_BUFFER_SIZE);
+
+	for(unsigned int wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
+		assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
+		assert(OAL_get_working_dir(exec_dir, wrong_dir_len) != 0);
+		assert(OAL_get_user_data_dir(exec_dir, wrong_dir_len) != 0);
+	}
+
+	free(exec_dir);
+}
+
 static bool create_empty_text_file(const char *path)
 {
 	FILE *text_file;
@@ -78,12 +97,15 @@ int main(void)
 	char *working_dir = calloc(work_dir_len, sizeof(char));
 	char *user_data_dir = calloc(user_data_dir_len, sizeof(char));
 	char *test_strdup_str = OAL_strdup("test string strdup");
+	OAL_error error_code = OAL_get_last_error();
 
 	assert(max_filepath_len != 0);
 	assert(exec_dir_len != 0);
 	assert(work_dir_len != 0);
 	assert(user_data_dir_len != 0);
 	assert(test_strdup_str);
+
+	assert(error_code == OAL_ERROR_NO_ERROR);
 
 	free(test_strdup_str);
 	printf("exec_dir_length: %zu\n", exec_dir_len);
@@ -108,11 +130,8 @@ int main(void)
 	assert(OAL_get_working_dir(working_dir, work_dir_len) == 0);
 	assert(OAL_get_user_data_dir(user_data_dir, user_data_dir_len) == 0);
 
-	for(unsigned int wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
-		assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
-		assert(OAL_get_working_dir(working_dir, wrong_dir_len) != 0);
-		assert(OAL_get_user_data_dir(user_data_dir, wrong_dir_len) != 0);
-	}
+	test_errors();
+
 	for(size_t i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
 		char *str_dup = OAL_strdup(dir_strs[i]);
 		char *slash_ptr = strchr(str_dup, '/');
