@@ -31,7 +31,8 @@
  *
  * @param path The path to the file to check
  * @return 0 if the file exists,
- * a non-zero value if it does not
+ * a non-zero value if an error occured or if the file does not exists (check
+ * the error code for more information).
  */
 int OAL_file_exists(const char *path);
 

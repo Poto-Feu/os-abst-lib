@@ -17,12 +17,11 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <errno.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "os_file.h"
 #include "os_paths.h"
@@ -40,7 +39,7 @@ int OAL_file_exists(const char *path)
 	int rtrn_val;
 
 	if(!path) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	}
 
@@ -49,18 +48,18 @@ int OAL_file_exists(const char *path)
 #else
 	rtrn_val = stat(path, &buf);
 #endif
+	if(rtrn_val != 0) p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
 	return rtrn_val;
 }
 
 int OAL_remove_file(const char *path)
 {
-	int remove_rtrn;
-
 	if(!path) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
-	}
-	remove_rtrn = remove(path);
-
-	return remove_rtrn;
+	} else if(remove(path) != 0) {
+		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
+		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		return -1;
+	} else return 0;
 }

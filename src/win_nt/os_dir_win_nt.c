@@ -20,13 +20,13 @@
 #include "os_type.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-#include <errno.h>
 #include <string.h>
 
 #include <windows.h>
 
 #include "os_dir.h"
 #include "os_file.h"
+#include "private_funcs.h"
 
 size_t OAL_get_dir_file_count(const char *dir)
 {
@@ -36,21 +36,24 @@ size_t OAL_get_dir_file_count(const char *dir)
 	long count = 0;
 
 	if(!dir) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	}
 
 	if(OAL_file_exists(dir) != 0) return -1;
-	first_file_str = malloc((strlen(dir) + 3) * sizeof(char));
-	if(!first_file_str) return -1;
+	else if(!(first_file_str = malloc((strlen(dir) + 3) * sizeof(char)))) {
+		p_set_error(OAL_ERROR_ALLOC_FAILED);
+		return -1;
+	}
 
 	strcpy(first_file_str, dir);
 	strcat(first_file_str, "\\*");
 
 	if((file_handle = FindFirstFileA(first_file_str, &file_data))
 			== INVALID_HANDLE_VALUE) {
-			free(first_file_str);
-			return -1;
+		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		free(first_file_str);
+		return -1;
 	}
 	free(first_file_str);
 

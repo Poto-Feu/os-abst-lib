@@ -19,29 +19,41 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 #include "os_string.h"
 #include "os_type.h"
+#include "private_funcs.h"
 
-#if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-#include "OAL_flags.h"
+#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#define strdup _strdup
+#endif
 
-extern OAL_FORCEINLINE char *OAL_strdup(const char *src);
-#else
-char *OAL_strdup(const char *src)
+#if !defined(OAL_IS_POSIX) && OAL_TARGET_OS != OAL_OS_WINDOWS_NT
+static char *custom_strdup(const char *src)
 {
-	if(!src) {
-		errno = EFAULT;
-		return NULL;
-	}
 	char *str;
 
-	str = malloc((strlen(src) + 1) * sizeof(char));
-	if(!str) return NULL;
-
+	if(!(str = malloc((strlen(src) + 1) * sizeof(char)))) return NULL;
 	strcpy(str, src);
-
 	return str;
 }
 #endif
+
+char *OAL_strdup(const char *src)
+{
+	char *str;
+
+	if(!src) {
+		p_set_error(OAL_ERROR_NULL_PTR);
+		return NULL;
+	}
+#if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+	if(!(str = strdup(src))) {
+#else
+	if(!(str = custom_strdup(src))) {
+#endif
+		p_set_error(OAL_ERROR_ALLOC_FAILED);
+		return NULL;
+	}
+	return str;
+}

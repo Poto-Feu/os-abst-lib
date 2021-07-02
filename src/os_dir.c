@@ -28,7 +28,6 @@
 #include "os_paths.h"
 #include "os_string.h"
 #include "private_funcs.h"
-#include "private_consts.h"
 
 #if defined(OAL_IS_POSIX)
 #include <unistd.h>
@@ -43,27 +42,35 @@
 static int OAL_create_non_recursive_dir(const char *path)
 {
 	if(!path) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
+	/* Check if folder exists to not catch "file already exists"-like errors */
 	} else if(OAL_file_exists(path) != 0) {
-		/*Check if folder exists to not catch "file already exists"-like errors*/
-		return mkdir(path, 0777);
+		if(mkdir(path, 0777) == 0) return 0;
+		else if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
+		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+
+		return -1;
 	} else return 0;
 }
 
 int OAL_create_dir(const char *path)
 {
 	if(!path) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	}
 
 	for(size_t i = 0; i < strlen(path); ++i) {
 		if(i == strlen(path) - 1) {
 			if(OAL_file_exists(path) != 0) {
+				char *current_directory;
 				int rtrn_val;
-				char *current_directory = malloc((i + 2) * sizeof(char));
 
+				if(!(current_directory = malloc((i + 2) * sizeof(char)))) {
+					p_set_error(OAL_ERROR_ALLOC_FAILED);
+					return -1;
+				}
 				strncpy(current_directory, path, i + 1);
 				current_directory[i + 1] = '\0';
 				if(OAL_is_dir_separator(current_directory[i])) current_directory[i] = '\0';
@@ -80,11 +87,13 @@ int OAL_create_dir(const char *path)
 			/* Detect if this is the part of the path with the drive letter */
 			if(path[i-1] == ':') continue;
 #endif
+			/* Error code set by OAL_strdup */
 			current_directory = OAL_strdup(path);
 			if(!current_directory) return -1;
 			current_directory[i] = '\0';
 
 			if(OAL_file_exists(current_directory) != 0) {
+				/* Error code set by OAL_create_non_recursive_dir */
 				if(OAL_create_non_recursive_dir(current_directory) != 0) {
 					free(current_directory);
 					return -1;

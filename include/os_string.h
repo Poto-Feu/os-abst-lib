@@ -20,15 +20,6 @@
 #ifndef OAL_OS_STRING_H
 #define OAL_OS_STRING_H
 
-#include <stddef.h>
-
-#include "os_type.h"
-
-#if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-#include <string.h>
-#include "OAL_flags.h"
-#endif
-
 /**
  * @file os_string.h
  *
@@ -49,17 +40,6 @@
  * @return a pointer to the duplicated string,
  * NULL if the memory could not be allocated
  */
-#if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-OAL_FORCEINLINE char *OAL_strdup(const char *src)
-{
-#ifdef OAL_IS_POSIX
-	return strdup(src);
-#elif OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	return _strdup(src);
-#endif
-}
-#elif
 char *OAL_strdup(const char *src);
-#endif
 
 #endif

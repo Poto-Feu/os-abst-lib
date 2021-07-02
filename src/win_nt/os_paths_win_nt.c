@@ -21,7 +21,6 @@
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 
-#include <errno.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -29,22 +28,28 @@
 
 #include "os_paths.h"
 #include "os_dir.h"
-#include "private_consts.h"
+#include "private_funcs.h"
 
 int OAL_get_user_data_dir(char *buffer, size_t size)
 {
 	const char *LOCALAPPDATA_env = getenv("LOCALAPPDATA");
 
 	if(!buffer) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	} else if(size == 0 || size == 1) {
-		errno = EINVAL;
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		return -1;
-	} else if(!LOCALAPPDATA_env) return -1;
+	} else if(!LOCALAPPDATA_env) {
+		p_set_error(OAL_ERROR_MISSING_ENV);
+		return -1;
+	}
 
 	strncpy(buffer, LOCALAPPDATA_env, size);
-	if(buffer[size - 1] != '\0' || buffer[size - 2] != '\0') return -1;
+	if(buffer[size - 1] != '\0' || buffer[size - 2] != '\0') {
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
+		return -1;
+	}
 
 	buffer[strlen(buffer)] = OS_DIR_SEPARATOR;
 	return 0;
@@ -55,8 +60,10 @@ size_t OAL_get_user_data_dir_len(void)
 	const char *LOCALAPPDATA_env = getenv("LOCALAPPDATA");
 
 	/* Add 2 characters for the end slash and the null terminator */
-	if(!LOCALAPPDATA_env) return 0;
-	else return strlen(LOCALAPPDATA_env) + 2; 
+	if(!LOCALAPPDATA_env) {
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
+		return 0;
+	} else return strlen(LOCALAPPDATA_env) + 2; 
 }
 
 int OAL_get_executable_path(char *buffer, size_t size)
@@ -64,10 +71,10 @@ int OAL_get_executable_path(char *buffer, size_t size)
 	uint32_t path_end_index;
 
 	if(!buffer) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	} else if(size == 0) {
-		errno = EINVAL;
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		return -1;
 	}
 
@@ -76,8 +83,13 @@ int OAL_get_executable_path(char *buffer, size_t size)
 	 * the path length minus the NUL terminator. With a buffer large enough to contain the NUL
 	 * terminator, it will not return "size". */
 	path_end_index = GetModuleFileNameA(NULL, buffer, size);
-	if(path_end_index != 0 && path_end_index != size) return 0;
-	else return -1;
+	if(path_end_index == size) {
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
+		return -1;
+	} else if(path_end_index == size) {
+		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		return -1;
+	} else return 0;
 }
 
 size_t OAL_get_max_filepath_len(void)

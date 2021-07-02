@@ -26,6 +26,7 @@
 #include <dirent.h>
 
 #include "os_dir.h"
+#include "private_funcs.h"
 
 size_t OAL_get_dir_file_count(const char *dir)
 {
@@ -34,11 +35,16 @@ size_t OAL_get_dir_file_count(const char *dir)
 	long count = 0;
 
 	if(!dir) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	}
 
-	if(!(dir_strm = opendir(dir))) return -1;
+	if(!(dir_strm = opendir(dir))) {
+		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
+		else if(errno == ENOTDIR) p_set_error(OAL_ERROR_NOT_A_DIR);
+		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		return -1;
+	}
 
 	while((entry = readdir(dir_strm))) {
 		if(entry->d_type == DT_REG) ++count;

@@ -18,7 +18,6 @@
 */
 
 #include <sys/types.h>
-#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -32,6 +31,9 @@
 #define getcwd _getcwd
 #endif
 
+/* OAL_get_max_filepath_len never fails for now. However, if the implementation
+ * changes in the future, it will set its own error code. */
+
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD \
 				   || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 size_t OAL_get_executable_path_len(void)
@@ -40,9 +42,12 @@ size_t OAL_get_executable_path_len(void)
 	char *exec_path;
 
 	if(max_filepath_length == 0) return 0;
-	exec_path = malloc(max_filepath_length * sizeof(char));
-	if(!exec_path) return 0;
+	else if(!(exec_path = malloc(max_filepath_length * sizeof(char)))) {
+		p_set_error(OAL_ERROR_ALLOC_FAILED);
+		return 0;
+	}
 
+	/* Sets its own error code */
 	if(OAL_get_executable_path(exec_path, max_filepath_length) == 0) {
 		size_t path_length = strlen(exec_path);
 
@@ -62,16 +67,17 @@ int OAL_get_executable_dir(char *buffer, size_t size)
 	bool is_NUL_encountered = false;
 	
 	if(!buffer) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	} else if(size == 0 || size == 1) {
-		errno = EINVAL;
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		return -1;
 	} else if(exec_path_length == 0) return -1;
 
-	exec_path = malloc(exec_path_length);
-	if(!exec_path) return -1;
-	else if(OAL_get_executable_path(exec_path, exec_path_length) != 0) {
+	if(!(exec_path = malloc(exec_path_length))) {
+		p_set_error(OAL_ERROR_ALLOC_FAILED);
+		return -1;
+	} else if(OAL_get_executable_path(exec_path, exec_path_length) != 0) {
 		free(exec_path);
 		return -1;
 	}
@@ -83,18 +89,16 @@ int OAL_get_executable_dir(char *buffer, size_t size)
 		else if(exec_path[i] == '\0') is_NUL_encountered = true;
 	}
 
-	/* We don't need to care about the side effects of the size_t cast as the only possible negative
-	 * value is -1 and it is already taken into account. */
 	if(final_slash_pos == -1 || (size_t)final_slash_pos > size - 2) {
-		free(exec_path);
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		return -1;
-	} else {
-		exec_path[final_slash_pos] = OS_DIR_SEPARATOR;
-		exec_path[final_slash_pos + 1] = '\0';
-		strcpy(buffer, exec_path);
-		free(exec_path);
-		return 0;
 	}
+
+	exec_path[final_slash_pos] = OS_DIR_SEPARATOR;
+	exec_path[final_slash_pos + 1] = '\0';
+	strcpy(buffer, exec_path);
+	free(exec_path);
+	return 0;
 }
 
 size_t OAL_get_executable_dir_len(void)
@@ -103,10 +107,10 @@ size_t OAL_get_executable_dir_len(void)
 	char *exec_dir;
 
 	if(max_filepath_length == 0) return 0;
-	exec_dir = malloc(max_filepath_length * sizeof(char));
-	if(!exec_dir) return 0;
-
-	if(OAL_get_executable_dir(exec_dir, max_filepath_length) == 0) {
+	else if(!(exec_dir = malloc(max_filepath_length * sizeof(char)))) {
+		p_set_error(OAL_ERROR_ALLOC_FAILED);
+		return 0;
+	} else if(OAL_get_executable_dir(exec_dir, max_filepath_length) == 0) {
 		size_t path_length = strlen(exec_dir);
 
 		free(exec_dir);
@@ -123,10 +127,10 @@ size_t OAL_get_executable_dir_len(void)
 int OAL_get_working_dir(char *buffer, size_t size)
 {
 	if(!buffer) {
-		errno = EFAULT;
+		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	} else if(size == 0) {
-		errno = EINVAL;
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		return -1;
 	} else if(getcwd(buffer, size)) {
 		size_t path_len = strlen(buffer);
@@ -137,8 +141,11 @@ int OAL_get_working_dir(char *buffer, size_t size)
 				buffer[path_len + 1] = '\0';
 			} else return -1;
 		}
-	} else return -1;
-	return 0;
+		return 0;
+	} else {
+		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		return -1;
+	}
 }
 
 size_t OAL_get_working_dir_len(void)
@@ -147,8 +154,10 @@ size_t OAL_get_working_dir_len(void)
 	char *working_dir;
 
 	if(max_filepath_length == 0) return 0;
-	working_dir = malloc(max_filepath_length * sizeof(char));
-	if(!working_dir) return 0;
+	else if(!(working_dir = malloc(max_filepath_length * sizeof(char)))) {
+		p_set_error(OAL_ERROR_ALLOC_FAILED);
+		return 0;
+	}
 
 	if(OAL_get_working_dir(working_dir, max_filepath_length) == 0) {
 		size_t path_length = strlen(working_dir);
