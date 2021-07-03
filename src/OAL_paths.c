@@ -22,7 +22,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "os_paths.h"
+#include "OAL_paths.h"
 #include "private_funcs.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT

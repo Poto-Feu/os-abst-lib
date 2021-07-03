@@ -22,10 +22,10 @@
 
 #include <stddef.h>
 
-#include "os_type.h"
+#include "OAL_os.h"
 
 /**
- * @file os_paths.h
+ * @file OAL_paths.h
  *
  * @brief Paths-related OS functions.
  *

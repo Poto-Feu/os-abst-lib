@@ -17,29 +17,39 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef OAL_OS_STRING_H
-#define OAL_OS_STRING_H
+#include "OAL_os.h"
 
-/**
- * @file os_string.h
- *
- * @brief String-related functions.
- *
- * This header provides functions that are mostly part of the POSIX
- * specifictation but not the C99 standard. This makes these functions
- * available on systems such as Windows NT.
- */
+#if defined(OAL_IS_POSIX)
+#include <errno.h>
+#include <stdlib.h>
 
-/**
- * @brief An implementation of the POSIX function strdup.
- *
- * If the program is running on a POSIX OS, the function calls the native
- * strdup. The returned string must be freed to avoid memory leaks.
- * 
- * @param src char pointer to the source string
- *
- * @return a pointer to the duplicated string,
- * NULL if the memory could not be allocated
- */
-char *OAL_strdup(const char *src);
+#include <dirent.h>
+
+#include "OAL_dir.h"
+#include "private_funcs.h"
+
+size_t OAL_get_dir_file_count(const char *dir)
+{
+	DIR *dir_strm;
+	struct dirent *entry;
+	long count = 0;
+
+	if(!dir) {
+		p_set_error(OAL_ERROR_NULL_PTR);
+		return -1;
+	}
+
+	if(!(dir_strm = opendir(dir))) {
+		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
+		else if(errno == ENOTDIR) p_set_error(OAL_ERROR_NOT_A_DIR);
+		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		return -1;
+	}
+
+	while((entry = readdir(dir_strm))) {
+		if(entry->d_type == DT_REG) ++count;
+	}
+
+	return count;
+}
 #endif

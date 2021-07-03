@@ -21,7 +21,7 @@
 #define OS_TYPE_H
 
 /**
- * @file os_type.h
+ * @file OAL_os.h
  *
  * @brief Header containing various members related to OS types.
  */

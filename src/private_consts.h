@@ -20,7 +20,7 @@
 #ifndef PRIVATE_CONSTS_H
 #define PRIVATE_CONSTS_H
 
-#include "os_type.h"
+#include "OAL_os.h"
 
 #define WINDOWS_DIR_SEPARATOR '\\'
 #define POSIX_DIR_SEPARATOR '/'

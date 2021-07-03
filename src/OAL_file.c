@@ -17,43 +17,36 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
+#include <errno.h>
+#include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
-#include "os_string.h"
-#include "os_type.h"
+#include "OAL_file.h"
+#include "OAL_paths.h"
+#include "OAL_string.h"
 #include "private_funcs.h"
 
+int OAL_file_exists(const char *path)
+{
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-#define strdup _strdup
-#endif
-
-#if !defined(OAL_IS_POSIX) && OAL_TARGET_OS != OAL_OS_WINDOWS_NT
-static char *custom_strdup(const char *src)
-{
-	char *str;
-
-	if(!(str = malloc((strlen(src) + 1) * sizeof(char)))) return NULL;
-	strcpy(str, src);
-	return str;
-}
-#endif
-
-char *OAL_strdup(const char *src)
-{
-	char *str;
-
-	if(!src) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		return NULL;
-	}
-#if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	if(!(str = strdup(src))) {
+	struct _stat buf;
 #else
-	if(!(str = custom_strdup(src))) {
+	struct stat buf;
 #endif
-		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		return NULL;
+	int rtrn_val;
+
+	if(!path) {
+		p_set_error(OAL_ERROR_NULL_PTR);
+		return -1;
 	}
-	return str;
+
+#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+	rtrn_val = _stat(path, &buf);
+#else
+	rtrn_val = stat(path, &buf);
+#endif
+	if(rtrn_val != 0) p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
+	return rtrn_val;
 }

@@ -17,35 +17,26 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef OS_DIR_H
-#define OS_DIR_H
+#include "OAL_os.h"
 
-#include <stddef.h>
-
-/**
- * @file os_dir.h
- *
- * @brief Directory-related OS functions.
- */
-
-/**
- * @brief Create a directory to the specified path.
- *
- * The creation of the directory can be recursive.
- *
- * @return 0 if the folder was successfully created (or already existed),
- * a non-zero value if an error occured
- */
-int OAL_create_dir(const char *path);
-
-/**
- * @brief Get the number of files present in the specified directory.
- *
- * Subdirectories are excluded from the file count.
- *
- * @return the number of files present in the specified directory.
- * -1 if an error occured
- */
-size_t OAL_get_dir_file_count(const char *dir);
-
+enum OAL_os_type OAL_get_os_type(void)
+{
+#if OAL_TARGET_OS == OAL_OS_GNU_LINUX
+	return OAL_OS_TYPE_GNU_LINUX;
+#elif OAL_TARGET_OS == OAL_OS_FREEBSD
+	return OAL_OS_TYPE_FREEBSD;
+#elif OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+	return OAL_OS_TYPE_WINDOWS_NT;
+#else
+	return OAL_OS_TYPE_OTHER;
 #endif
+}
+
+int OAL_is_os_posix(void)
+{
+#if defined(OAL_IS_POSIX)
+	return 0;
+#else
+	return -1;
+#endif
+}

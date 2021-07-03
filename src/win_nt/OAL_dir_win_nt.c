@@ -17,15 +17,15 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "os_type.h"
+#include "OAL_os.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 #include <string.h>
 
 #include <windows.h>
 
-#include "os_dir.h"
-#include "os_file.h"
+#include "OAL_dir.h"
+#include "OAL_file.h"
 #include "private_funcs.h"
 
 size_t OAL_get_dir_file_count(const char *dir)

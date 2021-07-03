@@ -17,26 +17,43 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "os_type.h"
+#include <stdlib.h>
+#include <string.h>
 
-enum OAL_os_type OAL_get_os_type(void)
-{
-#if OAL_TARGET_OS == OAL_OS_GNU_LINUX
-	return OAL_OS_TYPE_GNU_LINUX;
-#elif OAL_TARGET_OS == OAL_OS_FREEBSD
-	return OAL_OS_TYPE_FREEBSD;
-#elif OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	return OAL_OS_TYPE_WINDOWS_NT;
-#else
-	return OAL_OS_TYPE_OTHER;
+#include "OAL_string.h"
+#include "OAL_os.h"
+#include "private_funcs.h"
+
+#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#define strdup _strdup
 #endif
+
+#if !defined(OAL_IS_POSIX) && OAL_TARGET_OS != OAL_OS_WINDOWS_NT
+static char *custom_strdup(const char *src)
+{
+	char *str;
+
+	if(!(str = malloc((strlen(src) + 1) * sizeof(char)))) return NULL;
+	strcpy(str, src);
+	return str;
 }
-
-int OAL_is_os_posix(void)
-{
-#if defined(OAL_IS_POSIX)
-	return 0;
-#else
-	return -1;
 #endif
+
+char *OAL_strdup(const char *src)
+{
+	char *str;
+
+	if(!src) {
+		p_set_error(OAL_ERROR_NULL_PTR);
+		return NULL;
+	}
+#if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+	if(!(str = strdup(src))) {
+#else
+	if(!(str = custom_strdup(src))) {
+#endif
+		p_set_error(OAL_ERROR_ALLOC_FAILED);
+		return NULL;
+	}
+	return str;
 }

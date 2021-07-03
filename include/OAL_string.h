@@ -17,22 +17,29 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef OS_FILE_H
-#define OS_FILE_H
+#ifndef OAL_OS_STRING_H
+#define OAL_OS_STRING_H
 
 /**
- * @file os_file.h
+ * @file OAL_string.h
  *
- * @brief File-related OS functions.
+ * @brief String-related functions.
+ *
+ * This header provides functions that are mostly part of the POSIX
+ * specifictation but not the C99 standard. This makes these functions
+ * available on systems such as Windows NT.
  */
 
 /**
- * @brief Check if a file (including directories) exists.
+ * @brief An implementation of the POSIX function strdup.
  *
- * @param path The path to the file to check
- * @return 0 if the file exists,
- * a non-zero value if an error occured or if the file does not exists (check
- * the error code for more information).
+ * If the program is running on a POSIX OS, the function calls the native
+ * strdup. The returned string must be freed to avoid memory leaks.
+ * 
+ * @param src char pointer to the source string
+ *
+ * @return a pointer to the duplicated string,
+ * NULL if the memory could not be allocated
  */
-int OAL_file_exists(const char *path);
+char *OAL_strdup(const char *src);
 #endif

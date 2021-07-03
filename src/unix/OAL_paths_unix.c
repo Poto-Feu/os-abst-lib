@@ -17,7 +17,7 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "os_type.h"
+#include "OAL_os.h"
 
 #if defined(OAL_IS_POSIX)
 
@@ -26,8 +26,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "os_paths.h"
-#include "os_dir.h"
+#include "OAL_paths.h"
+#include "OAL_dir.h"
 #include "private_funcs.h"
 
 #if OAL_TARGET_OS == OAL_OS_FREEBSD

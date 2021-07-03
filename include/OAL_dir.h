@@ -17,37 +17,35 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <errno.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#ifndef OS_DIR_H
+#define OS_DIR_H
 
-#include "os_file.h"
-#include "os_paths.h"
-#include "os_string.h"
-#include "private_funcs.h"
-#include "private_consts.h"
+#include <stddef.h>
 
-int OAL_file_exists(const char *path)
-{
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	struct _stat buf;
-#else
-	struct stat buf;
+/**
+ * @file OAL_dir.h
+ *
+ * @brief Directory-related OS functions.
+ */
+
+/**
+ * @brief Create a directory to the specified path.
+ *
+ * The creation of the directory can be recursive.
+ *
+ * @return 0 if the folder was successfully created (or already existed),
+ * a non-zero value if an error occured
+ */
+int OAL_create_dir(const char *path);
+
+/**
+ * @brief Get the number of files present in the specified directory.
+ *
+ * Subdirectories are excluded from the file count.
+ *
+ * @return the number of files present in the specified directory.
+ * -1 if an error occured
+ */
+size_t OAL_get_dir_file_count(const char *dir);
+
 #endif
-	int rtrn_val;
-
-	if(!path) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		return -1;
-	}
-
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	rtrn_val = _stat(path, &buf);
-#else
-	rtrn_val = stat(path, &buf);
-#endif
-	if(rtrn_val != 0) p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
-	return rtrn_val;
-}

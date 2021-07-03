@@ -19,16 +19,16 @@ else()
 endif()
 
 add_library(OsAbstLib SHARED
-	src/unix/os_dir_unix.c
-	src/unix/os_paths_unix.c
-	src/win_nt/os_dir_win_nt.c
-	src/win_nt/os_paths_win_nt.c
+	src/unix/OAL_dir_unix.c
+	src/unix/OAL_paths_unix.c
+	src/win_nt/OAL_dir_win_nt.c
+	src/win_nt/OAL_paths_win_nt.c
+	src/OAL_dir.c
 	src/OAL_error.c
-	src/os_dir.c
-	src/os_file.c
-	src/os_paths.c
-	src/os_string.c
-	src/os_type.c
+	src/OAL_file.c
+	src/OAL_os.c
+	src/OAL_paths.c
+	src/OAL_string.c
 	src/private_consts.c
 	src/private_funcs.c)
 
@@ -53,8 +53,8 @@ set_target_properties(OsAbstLib PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(OsAbstLib PROPERTIES SOVERSION 0.1)
 
 set_target_properties(OsAbstLib PROPERTIES PUBLIC_HEADER "include/OsAbstLib.h;\
-include/OAL_error.h;include/os_dir.h;include/os_file.h;include/os_paths.h;\
-include/os_string.h;include/os_type.h")
+include/OAL_error.h;include/OAL_dir.h;include/OAL_file.h;include/OAL_paths.h;\
+include/OAL_string.h;include/OAL_os.h")
 
 include(GNUInstallDirs)
 

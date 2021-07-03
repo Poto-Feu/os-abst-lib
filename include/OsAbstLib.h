@@ -31,8 +31,8 @@
  */
 
 #include "OAL_error.h"
-#include "os_dir.h"
-#include "os_file.h"
-#include "os_paths.h"
-#include "os_string.h"
-#include "os_type.h"
+#include "OAL_dir.h"
+#include "OAL_file.h"
+#include "OAL_paths.h"
+#include "OAL_string.h"
+#include "OAL_os.h"
