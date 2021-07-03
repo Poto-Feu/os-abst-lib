@@ -22,6 +22,7 @@ add_library(OsAbstLib SHARED
 	src/unix/os_paths_unix.c
 	src/win_nt/os_dir_win_nt.c
 	src/win_nt/os_paths_win_nt.c
+	src/win_nt/private_funcs_win_nt.c
 	src/OAL_error.c
 	src/os_dir.c
 	src/os_file.c
