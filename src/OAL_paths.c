@@ -85,7 +85,7 @@ int OAL_get_executable_dir(char *buffer, size_t size)
 	/* We search the last slash of the path to find the length of the part of
 	 * the strings that will be copied. */
 	for(size_t i = 0; i < exec_path_length && !is_NUL_encountered; ++i) {
-		if(OAL_is_dir_separator(exec_path[i])) final_slash_pos = i;
+		if(p_is_dir_separator(exec_path[i])) final_slash_pos = i;
 		else if(exec_path[i] == '\0') is_NUL_encountered = true;
 	}
 
@@ -135,7 +135,7 @@ int OAL_get_working_dir(char *buffer, size_t size)
 	} else if(getcwd(buffer, size)) {
 		size_t path_len = strlen(buffer);
 
-		if(!OAL_is_dir_separator(buffer[path_len - 1])) {
+		if(!p_is_dir_separator(buffer[path_len - 1])) {
 			if(path_len + 1 < size) {
 				buffer[path_len] = OS_DIR_SEPARATOR;
 				buffer[path_len + 1] = '\0';

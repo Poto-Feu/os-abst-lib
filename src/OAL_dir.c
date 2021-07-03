@@ -73,14 +73,16 @@ int OAL_create_dir(const char *path)
 				}
 				strncpy(current_directory, path, i + 1);
 				current_directory[i + 1] = '\0';
-				if(OAL_is_dir_separator(current_directory[i])) current_directory[i] = '\0';
+				if(p_is_dir_separator(current_directory[i])) {
+					current_directory[i] = '\0';
+				}
 
 				rtrn_val = OAL_create_non_recursive_dir(current_directory);
 				free(current_directory);
 
 				return rtrn_val;
 			}
-		} else if(OAL_is_dir_separator(path[i]) && i != 0) {
+		} else if(p_is_dir_separator(path[i]) && i != 0) {
 			char *current_directory;
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT

@@ -21,7 +21,7 @@
 
 static OAL_error current_error = OAL_ERROR_NO_ERROR;
 
-bool OAL_is_dir_separator(char ch)
+bool p_is_dir_separator(char ch)
 {
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 	return (ch == WINDOWS_DIR_SEPARATOR || ch == POSIX_DIR_SEPARATOR);
