@@ -14,7 +14,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Wall -Wextra -pedantic -Wstrict-prototypes -Wvla)
 else()
-	message(WARNING "compiler and linker flags are only set if Clang or GCC is used")
+	message(WARNING "compiler and linker flags are only set if Clang or GCC\
+	is used")
 endif()
 
 add_library(OsAbstLib SHARED

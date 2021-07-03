@@ -50,7 +50,8 @@
  */
 #define OAL_IS_POSIX 1
 
-/*Simplify the discrepancies between how different OSes of the same type defines their macros.*/
+/* Simplify the discrepancies between how different OSes of the same type
+ * define their macros.*/
 #if !defined(unix) && !defined(__unix__) && !defined(__unix)
 #undef OAL_IS_POSIX
 #endif
@@ -62,6 +63,7 @@
 #elif defined(_WIN32)
 #define OAL_TARGET_OS OAL_OS_WINDOWS_NT
 #else
+
 /**
  * @brief Macro indicating which OS the user is currently using.
  *
@@ -101,5 +103,4 @@ enum OAL_os_type OAL_get_os_type(void);
  * a non-zero value if it is not
  */
 int OAL_is_os_posix(void);
-
 #endif

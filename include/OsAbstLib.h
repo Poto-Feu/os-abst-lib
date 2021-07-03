@@ -19,14 +19,15 @@
 
 /**
  * @file OsAbstLib.h
- * @brief Main header. When using the library, include this header instead of the smaller ones.
+ * @brief Main header. When using the library, include this header instead of
+ * the smaller ones.
  */
 
 /** \mainpage OsAbstLib
  *
- * This library provides OS-neutral functions for several specific tasks. This includes POSIX
- * functions not available on Windows or functions retrieving OS specific paths such as the user
- * data path.
+ * This library provides OS-neutral functions for several specific tasks. This
+ * includes POSIX functions not available on Windows or functions retrieving OS
+ * specific paths such as the user data path.
  */
 
 #include "OAL_error.h"

@@ -39,8 +39,8 @@
 
 const char *const user_data_dir_suffix = "/.local/share/";
 
-/* The XDG Base Directory Specs specifies that $HOME/.local/share should be used if the
- * XDG_DATA_HOME environment variable is not set. */
+/* The XDG Base Directory Specs specifies that $HOME/.local/share should be
+ * used if the XDG_DATA_HOME environment variable is not set. */
 static int OAL_get_user_data_dir_no_env(char *buffer, size_t size)
 {
 	const char *HOME_env = getenv("HOME");
@@ -112,8 +112,9 @@ int OAL_get_executable_path(char *buffer, size_t size)
 		return -1;
 	}
 
-	/* This is a tricky part since each POSIX OS has its own way of fetching the path of the
-	 * currently running executable. Hence this function must be manually ported. */
+	/* This is a tricky part since each POSIX OS has its own way of fetching
+	 * the path of the currently running executable. Hence this function must
+	 * be manually ported. */
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX
 	ssize_t readlink_rtrn = readlink("/proc/self/exe", buffer, size);
 

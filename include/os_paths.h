@@ -29,12 +29,9 @@
  *
  * @brief Paths-related OS functions.
  *
- * All returned paths are null-terminated except if the supplied buffer is too small.
+ * All returned paths are null-terminated except if the supplied buffer is too
+ * small.
  */
-
-/* You might think that these abbreviations are overkill. However, the C99 standard indicates that
- * the first 31 chars must be significant. Even if no known compilers impose such a limit, this
- * library is supposed to be C99 compliant so all names have been reduced to 31 chars or less. */
 
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD \
 				   || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
@@ -108,9 +105,10 @@ size_t OAL_get_max_filepath_len(void);
 /**
  * @brief Copy the user data directory path into a buffer.
  *
- * In most OSes, there is a convention on where programs should store their user-specific data. The
- * library does not return the path to a subdirectory specifically created for the current
- * executable - this decision is up to the programmer.
+ * In most OSes, there is a convention on where programs should store their
+ * user-specific data. The library does not return the path to a subdirectory
+ * specifically created for the current executable - this decision is up to the
+ * programmer.
  *
  * @return 0 if the string was successfully copied,
  * a non-zero value if an error occured.
@@ -124,5 +122,4 @@ int OAL_get_user_data_dir(char *buffer, size_t size);
  * 0 if an error occured.
  */
 size_t OAL_get_user_data_dir_len(void);
-
 #endif
