@@ -35,14 +35,4 @@
  * the error code for more information).
  */
 int OAL_file_exists(const char *path);
-
-/**
- * @brief Remove a file.
- *
- * @param path The path to the file to remove
- * @return 0 if the file was succesfully removed,
- * a non-zero value if an error occured
- */
-int OAL_remove_file(const char *path);
-
 #endif

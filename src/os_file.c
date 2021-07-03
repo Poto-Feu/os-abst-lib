@@ -51,15 +51,3 @@ int OAL_file_exists(const char *path)
 	if(rtrn_val != 0) p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
 	return rtrn_val;
 }
-
-int OAL_remove_file(const char *path)
-{
-	if(!path) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		return -1;
-	} else if(remove(path) != 0) {
-		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
-		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
-		return -1;
-	} else return 0;
-}
