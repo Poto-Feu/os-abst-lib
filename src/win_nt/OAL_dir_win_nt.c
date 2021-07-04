@@ -37,13 +37,13 @@ size_t OAL_get_dir_file_count(const char *dir)
 
 	if(!dir) {
 		p_set_error(OAL_ERROR_NULL_PTR);
-		return -1;
+		return 0;
 	}
 
-	if(OAL_file_exists(dir) != 0) return -1;
+	if(OAL_file_exists(dir) != 0) return 0;
 	else if(!(first_file_str = malloc((strlen(dir) + 3) * sizeof(char)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		return -1;
+		return 0;
 	}
 
 	strcpy(first_file_str, dir);
@@ -53,7 +53,7 @@ size_t OAL_get_dir_file_count(const char *dir)
 			== INVALID_HANDLE_VALUE) {
 		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
 		free(first_file_str);
-		return -1;
+		return 0;
 	}
 	free(first_file_str);
 
