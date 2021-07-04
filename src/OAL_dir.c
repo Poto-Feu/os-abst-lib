@@ -56,12 +56,14 @@ static int OAL_create_non_recursive_dir(const char *path)
 
 int OAL_create_dir(const char *path)
 {
+	size_t i;
+
 	if(!path) {
 		p_set_error(OAL_ERROR_NULL_PTR);
 		return -1;
 	}
 
-	for(size_t i = 0; i < strlen(path); ++i) {
+	for(i = 0; i < strlen(path); ++i) {
 		if(i == strlen(path) - 1) {
 			if(OAL_file_exists(path) != 0) {
 				char *current_directory;

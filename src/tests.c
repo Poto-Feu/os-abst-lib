@@ -26,9 +26,16 @@
 #include "OsAbstLib.h"
 #include "private_consts.h"
 
+#ifdef OAL_IS_POSIX
+#define SIZE_T_PRINTF "%lu"
+#else
+#define SIZE_T_PRINTF "%I64u"
+#endif
+
 static void test_errors(void)
 {
 	size_t max_filepath_len = OAL_get_max_filepath_len();
+	size_t wrong_dir_len;
 	char *exec_dir = calloc(max_filepath_len, sizeof(char));
 
 	assert(OAL_get_executable_dir(NULL, max_filepath_len) != 0);
@@ -36,7 +43,7 @@ static void test_errors(void)
 	assert(OAL_get_executable_dir(exec_dir, 4) != 0);
 	assert(OAL_get_last_error() == OAL_ERROR_BUFFER_SIZE);
 
-	for(unsigned int wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
+	for(wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
 		assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
 		assert(OAL_get_working_dir(exec_dir, wrong_dir_len) != 0);
 		assert(OAL_get_user_data_dir(exec_dir, wrong_dir_len) != 0);
@@ -93,6 +100,7 @@ int main(void)
 	size_t exec_dir_len = OAL_get_executable_dir_len();
 	size_t work_dir_len = OAL_get_working_dir_len();
 	size_t user_data_dir_len = OAL_get_user_data_dir_len();
+	size_t i;
 	char *exec_dir = calloc(max_filepath_len, sizeof(char));
 	char *working_dir = calloc(work_dir_len, sizeof(char));
 	char *user_data_dir = calloc(user_data_dir_len, sizeof(char));
@@ -108,17 +116,17 @@ int main(void)
 	assert(error_code == OAL_ERROR_NO_ERROR);
 
 	free(test_strdup_str);
-	printf("exec_dir_length: %zu\n", exec_dir_len);
-	printf("work_dir_length: %zu\n", work_dir_len);
-	printf("user_data_dir_length: %zu\n", user_data_dir_len);
+	printf("exec_dir_length:" SIZE_T_PRINTF "\n", exec_dir_len);
+	printf("work_dir_length:" SIZE_T_PRINTF "\n", work_dir_len);
+	printf("user_data_dir_length:" SIZE_T_PRINTF "\n", user_data_dir_len);
 
-	for(size_t i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
+	for(i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
 		assert(OAL_create_dir(dir_strs[i]) == 0);
 	}
 	assert(OAL_file_exists(fake_dir_str) != 0);
 	assert(OAL_file_exists(rendundant_dir_str) == 0);
 
-	for(size_t i = 0; i < sizeof(text_file_strs) / sizeof(text_file_strs[0]);
+	for(i = 0; i < sizeof(text_file_strs) / sizeof(text_file_strs[0]);
 			++i) {
 		assert(create_empty_text_file(text_file_strs[i]));
 	}
@@ -132,7 +140,7 @@ int main(void)
 
 	test_errors();
 
-	for(size_t i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
+	for(i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
 		char *str_dup = OAL_strdup(dir_strs[i]);
 		char *slash_ptr = strchr(str_dup, '/');
 

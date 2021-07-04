@@ -7,12 +7,12 @@ if (NOT CMAKE_BUILD_TYPE)
 	message(STATUS "CMAKE_BUILD_TYPE not set - defaulting to Release")
 endif()
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
-	add_compile_options(-Wall -Wextra -pedantic -Wstrict-prototypes -Wvla)
+	add_compile_options(-Wall -Wextra -Wstrict-prototypes -Wvla)
 else()
 	message(WARNING "compiler and linker flags are only set if Clang or GCC\
 	is used")

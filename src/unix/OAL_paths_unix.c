@@ -24,6 +24,8 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <sys/types.h>
 #include <unistd.h>
 
 #include "OAL_paths.h"
@@ -32,7 +34,6 @@
 
 #if OAL_TARGET_OS == OAL_OS_FREEBSD
 
-#include <sys/types.h>
 #include <sys/sysctl.h>
 
 #endif
