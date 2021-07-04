@@ -50,6 +50,7 @@ long OAL_get_dir_file_count(const char *dir)
 	while((entry = readdir(dir_strm)) && count != LONG_MAX) {
 		if(entry->d_type == DT_REG) ++count;
 	}
+	closedir(dir_strm);
 
 	return count;
 }
