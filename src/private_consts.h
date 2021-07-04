@@ -23,12 +23,12 @@
 #include "OAL_os.h"
 
 #define WINDOWS_DIR_SEPARATOR '\\'
-#define POSIX_DIR_SEPARATOR '/'
+#define UNIX_DIR_SEPARATOR '/'
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 #define OS_DIR_SEPARATOR WINDOWS_DIR_SEPARATOR
 #else
-#define OS_DIR_SEPARATOR POSIX_DIR_SEPARATOR
+#define OS_DIR_SEPARATOR UNIX_DIR_SEPARATOR
 #endif
 
 extern const unsigned int false;
