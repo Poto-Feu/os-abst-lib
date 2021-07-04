@@ -157,6 +157,30 @@ int OAL_get_executable_path(char *buffer, size_t size)
 #warning "OAL_get_executable_path is not available on your system"
 #endif
 
+int OAL_get_working_dir(char *buffer, size_t size)
+{
+	if(!buffer) {
+		p_set_error(OAL_ERROR_NULL_PTR);
+		return -1;
+	} else if(size == 0) {
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
+		return -1;
+	} else if(getcwd(buffer, size)) {
+		size_t path_len = strlen(buffer);
+
+		if(!p_is_dir_separator(buffer[path_len - 1])) {
+			if(path_len + 1 < size) {
+				buffer[path_len] = OS_DIR_SEPARATOR;
+				buffer[path_len + 1] = '\0';
+			} else return -1;
+		}
+		return 0;
+	} else {
+		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		return -1;
+	}
+}
+
 size_t OAL_get_max_filepath_len(void)
 {
 	/* There is no reason for this function to fail with these args. */

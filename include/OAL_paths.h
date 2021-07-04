@@ -72,7 +72,6 @@ int OAL_get_executable_dir(char *buffer, size_t size);
  * 0 if an error occured.
  */
 size_t OAL_get_executable_dir_len(void);
-
 #endif
 
 /**

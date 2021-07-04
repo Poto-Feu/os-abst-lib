@@ -21,6 +21,7 @@
 
 #if defined(OAL_IS_POSIX)
 #include <errno.h>
+#include <limits.h>
 #include <stdlib.h>
 
 #include <dirent.h>
@@ -28,7 +29,7 @@
 #include "OAL_dir.h"
 #include "private_funcs.h"
 
-size_t OAL_get_dir_file_count(const char *dir)
+long OAL_get_dir_file_count(const char *dir)
 {
 	DIR *dir_strm;
 	struct dirent *entry;
@@ -46,7 +47,7 @@ size_t OAL_get_dir_file_count(const char *dir)
 		return 0;
 	}
 
-	while((entry = readdir(dir_strm))) {
+	while((entry = readdir(dir_strm)) && count != LONG_MAX) {
 		if(entry->d_type == DT_REG) ++count;
 	}
 

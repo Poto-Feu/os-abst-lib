@@ -41,12 +41,13 @@ int OAL_create_dir(const char *path);
 /**
  * @brief Get the number of files present in the specified directory.
  *
- * Subdirectories are excluded from the file count. If the supplied path does
- * not point to a directory, the behavior is undefined and no error code will
- * be set.
+ * Subdirectories are excluded from the file count.
+ * If the number of files in a directory is superior to LONG_MAX, LONG_MAX is
+ * returned.
  *
- * @return the number of files present in the specified directory.
+ * @return the number of files present in the specified directory,
+ * -1 if an error occured.
  */
-size_t OAL_get_dir_file_count(const char *dir);
+long OAL_get_dir_file_count(const char *dir);
 
 #endif

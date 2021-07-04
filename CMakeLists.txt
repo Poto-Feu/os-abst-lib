@@ -13,6 +13,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Wall -Wextra -Wstrict-prototypes -Wvla)
+elseif(MSVC)
+	if(MSVC_VERSION GREATER_EQUAL 1900)
+		add_compile_options(/utf-8)
+	endif()
 else()
 	message(WARNING "compiler and linker flags are only set if Clang or GCC\
 	is used")
@@ -23,6 +27,7 @@ add_library(OsAbstLib SHARED
 	src/unix/OAL_paths_unix.c
 	src/win_nt/OAL_dir_win_nt.c
 	src/win_nt/OAL_paths_win_nt.c
+	src/win_nt/private_funcs_win_nt.c
 	src/OAL_dir.c
 	src/OAL_error.c
 	src/OAL_file.c

@@ -17,26 +17,14 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/**
- * @file OsAbstLib.h
- * @brief Main header. When using the library, include this header instead of
- * the smaller ones.
- */
+#ifndef PRIVATE_FUNCS_WIN_NT_H
+#define PRIVATE_FUNCS_WIN_NT_H
 
-/**
- * @mainpage OsAbstLib
- *
- * This library provides OS-neutral functions for several specific tasks. This
- * includes POSIX functions not available on Windows or functions retrieving OS
- * specific paths such as the user data path.
- *
- * All passed strings must be encoded in UTF-8. All returned strings will be
- * encoded in UTF-8.
- */
+#include <stddef.h>
 
-#include "OAL_error.h"
-#include "OAL_dir.h"
-#include "OAL_file.h"
-#include "OAL_paths.h"
-#include "OAL_string.h"
-#include "OAL_os.h"
+/* Error codes are set if these functions fails. You do not need to set them
+ * yourself. */
+wchar_t *p_utf8_to_alloc_utf16(const char *src);
+char *p_utf16_to_alloc_utf8(const wchar_t *src);
+
+#endif

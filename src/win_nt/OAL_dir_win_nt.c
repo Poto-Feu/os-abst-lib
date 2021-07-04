@@ -20,6 +20,7 @@
 #include "OAL_os.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#include <limits.h>
 #include <string.h>
 
 #include <windows.h>
@@ -27,37 +28,46 @@
 #include "OAL_dir.h"
 #include "OAL_file.h"
 #include "private_funcs.h"
+#include "win_nt/private_funcs_win_nt.h"
 
-size_t OAL_get_dir_file_count(const char *dir)
+long OAL_get_dir_file_count(const char *dir)
 {
-	WIN32_FIND_DATAA file_data;
+	WIN32_FIND_DATAW file_data;
 	HANDLE file_handle;
 	char *first_file_str;
+	wchar_t *first_file_wstr;
 	long count = 0;
 
 	if(!dir) {
 		p_set_error(OAL_ERROR_NULL_PTR);
-		return 0;
-	}
-
-	if(OAL_file_exists(dir) != 0) return 0;
-	else if(!(first_file_str = malloc((strlen(dir) + 3) * sizeof(char)))) {
+		return -1;
+	} else if(OAL_file_exists(dir) != 0) {
+		p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
+		return -1;
+	} else if(!(first_file_str = malloc((strlen(dir) + 3) * sizeof(char)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
 		return 0;
 	}
-
 	strcpy(first_file_str, dir);
 	strcat(first_file_str, "\\*");
 
-	if((file_handle = FindFirstFileA(first_file_str, &file_data))
-			== INVALID_HANDLE_VALUE) {
-		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+	if(!(first_file_wstr = p_utf8_to_alloc_utf16(first_file_str))) {
 		free(first_file_str);
-		return 0;
+		return -1;
 	}
 	free(first_file_str);
 
-	while(FindNextFileA(file_handle, &file_data) != FALSE) {
+	if((file_handle = FindFirstFileW(first_file_wstr, &file_data))
+			== INVALID_HANDLE_VALUE) {
+		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		free(first_file_str);
+		free(first_file_wstr);
+		return -1;
+	}
+	free(first_file_wstr);
+
+	while(FindNextFileW(file_handle, &file_data) != FALSE
+			&& count != LONG_MAX) {
 		if(!(file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) ++count;
 	}
 

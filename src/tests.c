@@ -26,11 +26,34 @@
 #include "OsAbstLib.h"
 #include "private_consts.h"
 
+#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#include "win_nt/private_funcs_win_nt.h"
+#endif
+
 #ifdef OAL_IS_POSIX
 #define SIZE_T_PRINTF "%lu"
 #else
 #define SIZE_T_PRINTF "%I64u"
 #endif
+
+static void test_win_utf8(void)
+{
+#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+	const char *utf8_file = "test_utf8_file.txt";
+	char *utf8_str;
+	wchar_t *utf16_str;
+	FILE *file_stream = fopen(utf8_file, "w");
+
+	utf16_str = p_utf8_to_alloc_utf16("সﺽ");
+	utf8_str = p_utf16_to_alloc_utf8(utf16_str);
+	fputs(utf8_str, file_stream);
+	fclose(file_stream);
+
+	remove(utf8_file);
+	free(utf8_str);
+	free(utf16_str);
+#endif
+}
 
 static void test_errors(void)
 {
@@ -106,6 +129,8 @@ int main(void)
 	char *user_data_dir = calloc(user_data_dir_len, sizeof(char));
 	char *test_strdup_str = OAL_strdup("test string strdup");
 	OAL_error error_code = OAL_get_last_error();
+
+	test_win_utf8();
 
 	assert(max_filepath_len != 0);
 	assert(exec_dir_len != 0);
