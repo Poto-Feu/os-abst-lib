@@ -61,26 +61,25 @@ size_t OAL_get_executable_path_len(void)
 
 int OAL_get_executable_dir(char *buffer, size_t size)
 {
+	char *exec_path = NULL;
 	ssize_t final_slash_pos = -1;
 	size_t exec_path_length = OAL_get_max_filepath_len();
 	size_t i;
-	char *exec_path;
+	int return_val = -1;
 	bool is_NUL_encountered = false;
 	
 	if(!buffer) {
 		p_set_error(OAL_ERROR_NULL_PTR);
-		return -1;
+		goto error_exit;
 	} else if(size == 0 || size == 1) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		return -1;
-	} else if(exec_path_length == 0) return -1;
-
-	if(!(exec_path = malloc(exec_path_length))) {
+		goto error_exit;
+	} else if(exec_path_length == 0) goto error_exit;
+	else if(!(exec_path = malloc(exec_path_length))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		return -1;
+		goto error_exit;
 	} else if(OAL_get_executable_path(exec_path, exec_path_length) != 0) {
-		free(exec_path);
-		return -1;
+		goto error_exit;
 	}
 
 	/* We search the last slash of the path to find the length of the part of
@@ -92,14 +91,17 @@ int OAL_get_executable_dir(char *buffer, size_t size)
 
 	if(final_slash_pos == -1 || (size_t)final_slash_pos > size - 2) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		return -1;
+		goto error_exit;
 	}
 
 	exec_path[final_slash_pos] = OS_DIR_SEPARATOR;
 	exec_path[final_slash_pos + 1] = '\0';
 	strcpy(buffer, exec_path);
+	
+	return_val = 0;
+error_exit:
 	free(exec_path);
-	return 0;
+	return return_val;
 }
 
 size_t OAL_get_executable_dir_len(void)
