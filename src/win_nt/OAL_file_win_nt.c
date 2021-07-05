@@ -17,23 +17,31 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef OS_FILE_H
-#define OS_FILE_H
+#include "OAL_os.h"
 
-/**
- * @file OAL_file.h
- *
- * @brief File-related OS functions.
- */
+#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#include <fileapi.h>
 
-/**
- * @brief Check if a file (including directories) exists.
- *
- * @param path The path to the file to check
- *
- * @return 0 if the file exists,
- * a non-zero value if an error occured or if the file does not exists (check
- * the error code for more information).
- */
-int OAL_file_exists(const char *path);
+#include "OAL_file.h"
+#include "private_funcs.h"
+#include "win_nt/private_funcs_win_nt.h"
+
+int OAL_file_exists(const char *path)
+{
+	DWORD attribs;
+	wchar_t *path_w = NULL;
+	int return_val = -1;
+
+	if(!(path_w = p_utf8_to_alloc_utf16(path))) goto error_exit;
+
+	if((attribs = GetFileAttributesW(path_w)) != INVALID_FILE_ATTRIBUTES) {
+		return_val = 0;
+	} else {
+		p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
+		goto error_exit;
+	}
+error_exit:
+	free(path_w);
+	return return_val;
+}
 #endif

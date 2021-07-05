@@ -17,36 +17,20 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <errno.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "OAL_os.h"
+
+#ifdef OAL_IS_POSIX
+#include <unistd.h>
 
 #include "OAL_file.h"
-#include "OAL_paths.h"
-#include "OAL_string.h"
 #include "private_funcs.h"
 
 int OAL_file_exists(const char *path)
 {
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	struct _stat buf;
-#else
-	struct stat buf;
-#endif
-	int rtrn_val;
-
-	if(!path) {
-		p_set_error(OAL_ERROR_NULL_PTR);
+	if(access(path, F_OK) == 0) return 0;
+	else {
+		p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
 		return -1;
 	}
-
-#if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	rtrn_val = _stat(path, &buf);
-#else
-	rtrn_val = stat(path, &buf);
-#endif
-	if(rtrn_val != 0) p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
-	return rtrn_val;
 }
+#endif

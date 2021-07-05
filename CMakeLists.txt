@@ -24,13 +24,14 @@ endif()
 
 add_library(OsAbstLib SHARED
 	src/unix/OAL_dir_unix.c
+	src/unix/OAL_file_unix.c
 	src/unix/OAL_paths_unix.c
 	src/win_nt/OAL_dir_win_nt.c
+	src/win_nt/OAL_file_win_nt.c
 	src/win_nt/OAL_paths_win_nt.c
 	src/win_nt/private_funcs_win_nt.c
 	src/OAL_dir.c
 	src/OAL_error.c
-	src/OAL_file.c
 	src/OAL_os.c
 	src/OAL_paths.c
 	src/OAL_string.c
