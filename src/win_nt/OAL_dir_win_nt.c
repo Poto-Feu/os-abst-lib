@@ -46,7 +46,7 @@ long OAL_get_dir_file_count(const char *dir)
 		return -1;
 	} else if(!(first_file_str = malloc((strlen(dir) + 3) * sizeof(char)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		return 0;
+		return -1;
 	}
 	strcpy(first_file_str, dir);
 	strcat(first_file_str, "\\*");
