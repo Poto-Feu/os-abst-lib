@@ -107,7 +107,20 @@ size_t OAL_get_user_data_dir_len(void)
 	}
 }
 
-int OAL_get_executable_path(char *buffer, size_t size)
+static DWORD executable_path_wrapper(wchar_t *buf_w, DWORD size)
+{
+	return GetModuleFileNameW(NULL, buf_w, size);
+}
+
+static DWORD working_dir_wrapper(wchar_t *buf_w, DWORD size)
+{
+	return GetCurrentDirectoryW(size, buf_w);
+}
+
+/* Since WIN32 functions to query paths are quite similar, we can avoid any
+ * code duplication by passing a wrapper as a function pointer for each path */
+static int get_win32_api_path(char *buffer, size_t size,
+		DWORD (*win32_wrapper)(wchar_t *buffer, DWORD size))
 {
 	wchar_t *buf_w = NULL;
 	char *tmp_buf = NULL;
@@ -125,9 +138,10 @@ int OAL_get_executable_path(char *buffer, size_t size)
 	} else if(!(buf_w = malloc(max_fp_len * sizeof(wchar_t)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
 		goto error_exit;
+	} else if(!win32_wrapper(buf_w, max_fp_len)) {
+		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		goto error_exit;
 	}
-
-	GetModuleFileNameW(NULL, buf_w, max_fp_len);
 	buf_w[max_fp_len - 1] = '\0';
 	if(!(tmp_buf = p_utf16_to_alloc_utf8(buf_w))) goto error_exit;
 
@@ -144,42 +158,14 @@ error_exit:
 	return return_val;
 }
 
+int OAL_get_executable_path(char *buffer, size_t size)
+{
+	return get_win32_api_path(buffer, size, executable_path_wrapper);
+}
+
 int OAL_get_working_dir(char *buffer, size_t size)
 {
-	wchar_t *buf_w = NULL;
-	char *tmp_buf = NULL;
-	size_t max_fp_len;
-	int return_val = -1;
-
-	if(!buffer) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		goto error_exit;
-	} else if(size == 0) {
-		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		goto error_exit;
-	} else if(!(max_fp_len = OAL_get_max_filepath_len())) {
-		goto error_exit;
-	} else if(!(buf_w = malloc(max_fp_len * sizeof(wchar_t)))) {
-		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		goto error_exit;
-	}
-
-	GetCurrentDirectoryW(max_fp_len, buf_w);
-	buf_w[max_fp_len - 1] = '\0';
-	if(!(tmp_buf = p_utf16_to_alloc_utf8(buf_w))) goto error_exit;
-
-	strncpy(buffer, tmp_buf, size);
-	if(buffer[size - 1] != '\0' || buffer[size - 2] != '\0') {
-		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		goto error_exit;
-	}
-	buffer[strlen(buffer)] = OS_DIR_SEPARATOR;
-
-	return_val = 0;
-error_exit:
-	free(buf_w);
-	free(tmp_buf);
-	return return_val;
+	return get_win32_api_path(buffer, size, working_dir_wrapper);
 }
 
 size_t OAL_get_max_filepath_len(void)
