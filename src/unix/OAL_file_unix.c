@@ -20,7 +20,10 @@
 #include "OAL_os.h"
 
 #ifdef OAL_IS_POSIX
+#include <stdlib.h>
+
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "OAL_file.h"
 #include "private_funcs.h"
@@ -32,5 +35,18 @@ int OAL_file_exists(const char *path)
 		p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
 		return -1;
 	}
+}
+
+int OAL_is_file_regular(const char *path)
+{
+	struct stat buf;
+
+	if(stat(path, &buf) != 0) {
+		p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
+		return -1;
+	} else if(!S_ISREG(buf.st_mode)) {
+		p_set_error(OAL_ERROR_FILE_NOT_REGULAR);
+		return -1;
+	} else return 0;
 }
 #endif

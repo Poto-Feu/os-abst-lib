@@ -148,12 +148,14 @@ int main(void)
 	for(i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
 		assert(OAL_create_dir(dir_strs[i]) == 0);
 	}
+	assert(OAL_is_file_regular(dir_strs[0]) != 0);
 	assert(OAL_file_exists(fake_dir_str) != 0);
 	assert(OAL_file_exists(rendundant_dir_str) == 0);
 
 	for(i = 0; i < sizeof(text_file_strs) / sizeof(text_file_strs[0]);
 			++i) {
 		assert(create_empty_text_file(text_file_strs[i]));
+		assert(OAL_is_file_regular(text_file_strs[i]) == 0);
 	}
 
 	assert(OAL_get_dir_file_count("test_dir")

@@ -46,11 +46,13 @@ typedef enum {
 	OAL_ERROR_MISSING_ENV = 6,
 	/** The specified buffer size is too small */
 	OAL_ERROR_BUFFER_SIZE = 7,
+	/** The specified file path does not point to a regular file */
+	OAL_ERROR_FILE_NOT_REGULAR = 8,
 	/** An error occured but no specific error code is implemented - this may be
 	 * used for some edge cases. */
-	OAL_ERROR_UNKNOWN_ERROR = 8,
+	OAL_ERROR_UNKNOWN_ERROR = 9,
 	/** The specified error code does not exists */
-	OAL_ERROR_NO_MATCH_ERROR = 9,
+	OAL_ERROR_NO_MATCH_ERROR = 10,
 	/** Used internally by OsAbstLibrary - do not use it */
 	OAL_ERROR_ENUM_END
 } OAL_error;

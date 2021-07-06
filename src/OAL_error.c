@@ -33,6 +33,7 @@ const char *error_strs[] = {
 	"File is not a directory", /* OAL_ERROR_NOT_A_DIR */
 	"Missing environment variable", /* OAL_ERROR_MISSING_ENV */
 	"Buffer size too small", /* OAL_ERROR_BUFFER_SIZE */
+	"File is not a regular file", /* OAL_ERROR_NOT_A_REGULAR_FILE */
 	"Unimplemented error code", /* OAL_ERROR_UNKNOWN_ERROR */
 	"Error code does not exists" /* OAL_ERROR_NO_MATCH_ERROR */
 };

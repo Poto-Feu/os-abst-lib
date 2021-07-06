@@ -36,4 +36,18 @@
  * the error code for more information).
  */
 int OAL_file_exists(const char *path);
+
+/**
+ * @brief Check if a path points to a regular file.
+ *
+ * A regular file is a text or a binary file. Examples of files that are not
+ * "regular" are directories and symbolic links.
+ *
+ * @param path The path to the file to check
+ *
+ * @return 0 if the file exists,
+ * a non-zero value if an error occured or if the file is not regular (check
+ * the error code for more information).
+ */
+int OAL_is_file_regular(const char *path);
 #endif

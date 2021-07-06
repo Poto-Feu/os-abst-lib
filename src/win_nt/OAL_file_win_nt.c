@@ -26,22 +26,41 @@
 #include "private_funcs.h"
 #include "win_nt/private_funcs_win_nt.h"
 
+static bool get_file_attribs(const char *path, DWORD *attribs)
+{
+	wchar_t *path_w = NULL;
+
+	if(!(path_w = p_utf8_to_alloc_utf16(path))) return false;
+
+	*attribs = GetFileAttributesW(path_w);
+	free(path_w);
+
+	return true;
+}
+
 int OAL_file_exists(const char *path)
 {
 	DWORD attribs;
-	wchar_t *path_w = NULL;
-	int return_val = -1;
 
-	if(!(path_w = p_utf8_to_alloc_utf16(path))) goto error_exit;
-
-	if((attribs = GetFileAttributesW(path_w)) != INVALID_FILE_ATTRIBUTES) {
-		return_val = 0;
-	} else {
+	if(!get_file_attribs(path, &attribs)) return -1;
+	else if(attribs != INVALID_FILE_ATTRIBUTES) return 0;
+	else {
 		p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
-		goto error_exit;
+		return -1;
 	}
-error_exit:
-	free(path_w);
-	return return_val;
+}
+
+int OAL_is_file_regular(const char *path)
+{
+	DWORD attribs;
+
+	if(!get_file_attribs(path, &attribs)) return -1;
+	else if((attribs & FILE_ATTRIBUTE_DIRECTORY)
+			|| (attribs & FILE_ATTRIBUTE_REPARSE_POINT)
+			|| (attribs & FILE_ATTRIBUTE_TEMPORARY)) {
+		p_set_error(OAL_ERROR_FILE_NOT_REGULAR);
+		return -1;
+	} else return 0;
+	
 }
 #endif
