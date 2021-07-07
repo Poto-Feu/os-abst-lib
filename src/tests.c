@@ -36,11 +36,11 @@ static void test_errors(void)
 {
 	char *exec_dir;
 	OAL_error error_code = OAL_get_last_error();
-	size_t max_filepath_len;
+	long max_filepath_len;
 	long wrong_dir_len;
 
 	assert(error_code == OAL_ERROR_NO_ERROR);
-	assert((max_filepath_len = OAL_get_max_filepath_len()) != 0);
+	assert((max_filepath_len = OAL_get_max_filepath_len()) != -1);
 	assert((exec_dir = calloc(max_filepath_len, sizeof(char))));
 
 	for(wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
@@ -73,14 +73,14 @@ static void test_win_utf8(void)
 static void test_paths(void)
 {
 	char *working_dir, *user_data_dir, *exec_dir;
-	size_t exec_dir_len = OAL_get_executable_dir_len();
-	size_t working_dir_len = OAL_get_working_dir_len();
-	size_t user_data_dir_len = OAL_get_user_data_dir_len();
-	size_t max_filepath_len = OAL_get_max_filepath_len();
+	long exec_dir_len = OAL_get_executable_dir_len();
+	long working_dir_len = OAL_get_working_dir_len();
+	long user_data_dir_len = OAL_get_user_data_dir_len();
+	long max_filepath_len = OAL_get_max_filepath_len();
 
-	assert(exec_dir_len != 0);
-	assert(working_dir_len != 0);
-	assert(user_data_dir_len != 0);
+	assert(exec_dir_len != -1);
+	assert(working_dir_len != -1);
+	assert(user_data_dir_len != -1);
 
 	working_dir = calloc(working_dir_len, sizeof(char));
 	user_data_dir = calloc(user_data_dir_len, sizeof(char));
@@ -94,9 +94,9 @@ static void test_paths(void)
 	printf("working directory: %s\n", working_dir);
 	printf("user data path: %s\n", user_data_dir);
 
-	assert(exec_dir_len == strlen(exec_dir) + 1);
-	assert(working_dir_len == strlen(working_dir) + 1);
-	assert(user_data_dir_len == strlen(user_data_dir) + 1);
+	assert(exec_dir_len == (long)strlen(exec_dir) + 1);
+	assert(working_dir_len == (long)strlen(working_dir) + 1);
+	assert(user_data_dir_len == (long)strlen(user_data_dir) + 1);
 
 	free(exec_dir);
 	free(working_dir);

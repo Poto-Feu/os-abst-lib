@@ -36,15 +36,15 @@
 
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD \
 				   || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-size_t OAL_get_executable_path_len(void)
+long OAL_get_executable_path_len(void)
 {
-	size_t max_filepath_length = OAL_get_max_filepath_len();
+	long max_filepath_length = OAL_get_max_filepath_len();
 	char *exec_path;
 
-	if(max_filepath_length == 0) return 0;
+	if(max_filepath_length == -1) return -1;
 	else if(!(exec_path = malloc(max_filepath_length * sizeof(char)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		return 0;
+		return -1;
 	}
 
 	/* Sets its own error code */
@@ -55,23 +55,23 @@ size_t OAL_get_executable_path_len(void)
 		return path_length + 1;
 	} else {
 		free(exec_path);
-		return 0;
+		return -1;
 	}
 }
 
 int OAL_get_executable_dir(char *buffer, size_t size)
 {
 	char *exec_path = NULL;
-	ssize_t final_slash_pos = -1;
-	size_t exec_path_length = OAL_get_max_filepath_len();
-	size_t i;
+	long final_slash_pos = -1;
+	long exec_path_length = OAL_get_max_filepath_len();
+	long i;
 	int return_val = -1;
 	bool is_NUL_encountered = false;
 	
 	if(size == 0 || size == 1) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		goto error_exit;
-	} else if(exec_path_length == 0) goto error_exit;
+	} else if(exec_path_length == -1) goto error_exit;
 	else if(!(exec_path = malloc(exec_path_length))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
 		goto error_exit;
@@ -101,15 +101,15 @@ error_exit:
 	return return_val;
 }
 
-size_t OAL_get_executable_dir_len(void)
+long OAL_get_executable_dir_len(void)
 {
-	size_t max_filepath_length = OAL_get_max_filepath_len();
+	long max_filepath_length = OAL_get_max_filepath_len();
 	char *exec_dir;
 
-	if(max_filepath_length == 0) return 0;
+	if(max_filepath_length == -1) return -1;
 	else if(!(exec_dir = malloc(max_filepath_length * sizeof(char)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		return 0;
+		return -1;
 	} else if(OAL_get_executable_dir(exec_dir, max_filepath_length) == 0) {
 		size_t path_length = strlen(exec_dir);
 
@@ -117,31 +117,31 @@ size_t OAL_get_executable_dir_len(void)
 		return path_length + 1;
 	} else {
 		free(exec_dir);
-		return 0;
+		return -1;
 	}
 }
 #else
 #warning "OAL executable path functions are not available on your system"
 #endif
 
-size_t OAL_get_working_dir_len(void)
+long OAL_get_working_dir_len(void)
 {
-	size_t max_filepath_length = OAL_get_max_filepath_len();
+	long max_filepath_length = OAL_get_max_filepath_len();
 	char *working_dir;
 
-	if(max_filepath_length == 0) return 0;
+	if(max_filepath_length == -1) return -1;
 	else if(!(working_dir = malloc(max_filepath_length * sizeof(char)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		return 0;
+		return -1;
 	}
 
 	if(OAL_get_working_dir(working_dir, max_filepath_length) == 0) {
-		size_t path_length = strlen(working_dir);
+		long working_dir_len = strlen(working_dir);
 
 		free(working_dir);
-		return path_length + 1;
+		return working_dir_len + 1;
 	} else {
 		free(working_dir);
-		return 0;
+		return -1;
 	}
 }

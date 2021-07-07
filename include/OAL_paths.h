@@ -50,9 +50,9 @@ int OAL_get_executable_path(char *buffer, size_t size);
  * @brief Return the executable path length.
  *
  * @return The path length if successful,
- * 0 if an error occured.
+ * -1 if an error occured.
  */
-size_t OAL_get_executable_path_len(void);
+long OAL_get_executable_path_len(void);
 
 /**
  * @brief Return the path of the directory containing the running executable.
@@ -69,9 +69,9 @@ int OAL_get_executable_dir(char *buffer, size_t size);
  * @brief Return the executable directory path length.
  *
  * @return The path length if successful,
- * 0 if an error occured.
+ * -1 if an error occured.
  */
-size_t OAL_get_executable_dir_len(void);
+long OAL_get_executable_dir_len(void);
 #endif
 
 /**
@@ -89,17 +89,9 @@ int OAL_get_working_dir(char *buffer, size_t size);
  * @brief Return the user working directory path length.
  *
  * @return The path length if there was no error,
- * 0 if an error occured.
+ * -1 if an error occured.
  */
-size_t OAL_get_working_dir_len(void);
-
-/**
- * @brief Return the maximum length of file paths on the running OS.
- *
- * @return The maximum file path length if successful,
- * 0 if an error occured.
- */
-size_t OAL_get_max_filepath_len(void);
+long OAL_get_working_dir_len(void);
 
 /**
  * @brief Copy the user data directory path into a buffer.
@@ -118,9 +110,9 @@ int OAL_get_user_data_dir(char *buffer, size_t size);
  * @brief Return the user data directory path length.
  *
  * @return The path length if successful,
- * 0 if an error occured.
+ * -1 if an error occured.
  */
-size_t OAL_get_user_data_dir_len(void);
+long OAL_get_user_data_dir_len(void);
 
 /**
  * @brief Return the maximum length of file paths on the running OS.

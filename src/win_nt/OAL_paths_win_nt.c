@@ -93,12 +93,12 @@ error_exit:
 	return return_val;
 }
 
-size_t OAL_get_user_data_dir_len(void)
+long OAL_get_user_data_dir_len(void)
 {
 	char *LOCALAPPDATA_env = NULL;
 
 	/* Add 2 characters for the end slash and the null terminator */
-	if(!(LOCALAPPDATA_env = get_alloc_env_str("LOCALAPPDATA"))) return 0;
+	if(!(LOCALAPPDATA_env = get_alloc_env_str("LOCALAPPDATA"))) return -1;
 	else {
 		size_t len = strlen(LOCALAPPDATA_env) + 2;
 
@@ -124,13 +124,13 @@ static int get_win32_api_path(char *buffer, size_t size,
 {
 	wchar_t *buf_w = NULL;
 	char *tmp_buf = NULL;
-	size_t max_fp_len;
+	long max_fp_len;
 	int return_val = -1;
 
 	if(size == 0) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		goto error_exit;
-	} else if(!(max_fp_len = OAL_get_max_filepath_len())) {
+	} else if((max_fp_len = OAL_get_max_filepath_len()) == -1) {
 		goto error_exit;
 	} else if(!(buf_w = malloc(max_fp_len * sizeof(wchar_t)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);

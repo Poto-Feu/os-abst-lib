@@ -78,20 +78,19 @@ int OAL_get_user_data_dir(char *buffer, size_t size)
 	} else return OAL_get_user_data_dir_no_env(buffer, size);
 }
 
-size_t OAL_get_user_data_dir_len(void)
+long OAL_get_user_data_dir_len(void)
 {
 	const char *XDG_DATA_HOME_env = getenv("XDG_DATA_HOME");
 
-	if(XDG_DATA_HOME_env) {
-		/* 1 char for the slash separator and 1 char for the NULL terminator */
-		return strlen(XDG_DATA_HOME_env) + 2;
-	} else {
+	/* 1 char for the slash separator and 1 char for the NULL terminator */
+	if(XDG_DATA_HOME_env) return strlen(XDG_DATA_HOME_env) + 2;
+	else {
 		const char *HOME_env = getenv("HOME");
 
 		/* Add 1 character for the null terminator */
 		if(!HOME_env) {
 			p_set_error(OAL_ERROR_MISSING_ENV);
-			return 0;
+			return -1;
 		} else return strlen(HOME_env) + strlen(user_data_dir_suffix) + 1; 
 	}
 }
