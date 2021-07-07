@@ -169,9 +169,9 @@ int OAL_get_working_dir(char *buffer, size_t size)
 	}
 }
 
-size_t OAL_get_max_filepath_len(void)
+long OAL_get_max_filepath_len(void)
 {
 	/* There is no reason for this function to fail with these args. */
-	return (size_t)pathconf("/", _PC_PATH_MAX);
+	return pathconf("/", _PC_PATH_MAX);
 }
 #endif

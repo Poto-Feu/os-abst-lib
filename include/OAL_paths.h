@@ -121,4 +121,15 @@ int OAL_get_user_data_dir(char *buffer, size_t size);
  * 0 if an error occured.
  */
 size_t OAL_get_user_data_dir_len(void);
+
+/**
+ * @brief Return the maximum length of file paths on the running OS.
+ *
+ * This function cannot fail on any supported OS. However, a future
+ * implementation may "fail" hence the return error value.
+ *
+ * @return The maximum file path length if successful,
+ * -1 if an error occured.
+ */
+long OAL_get_max_filepath_len(void);
 #endif

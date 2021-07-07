@@ -165,7 +165,7 @@ int OAL_get_working_dir(char *buffer, size_t size)
 	return get_win32_api_path(buffer, size, working_dir_wrapper);
 }
 
-size_t OAL_get_max_filepath_len(void)
+long OAL_get_max_filepath_len(void)
 {
 	/* Long file paths are not supported - not a big deal since they are not
 	 * enabled by default. */
