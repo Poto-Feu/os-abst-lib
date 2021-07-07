@@ -32,27 +32,25 @@
 typedef enum {
 	/** No function failed (yet) */
 	OAL_ERROR_NO_ERROR = 0,
-	/** Pointer set to NULL */
-	OAL_ERROR_NULL_PTR = 1,
 	/** Allocation failed (malloc, realloc etc...) */
-	OAL_ERROR_ALLOC_FAILED = 2,
+	OAL_ERROR_ALLOC_FAILED = 1,
 	/** The specified path does not point to an existing file */
-	OAL_ERROR_FILE_NOT_EXISTS = 3,
+	OAL_ERROR_FILE_NOT_EXISTS = 2,
 	/** The required filesystem permissions are not present */
-	OAL_ERROR_FILE_PERMS = 4,
+	OAL_ERROR_FILE_PERMS = 3,
 	/** The specified file path does not point to a directory */
-	OAL_ERROR_NOT_A_DIR = 5,
+	OAL_ERROR_NOT_A_DIR = 4,
 	/** A required environment variable is not defined */
-	OAL_ERROR_MISSING_ENV = 6,
+	OAL_ERROR_MISSING_ENV = 5,
 	/** The specified buffer size is too small */
-	OAL_ERROR_BUFFER_SIZE = 7,
+	OAL_ERROR_BUFFER_SIZE = 6,
 	/** The specified file path does not point to a regular file */
-	OAL_ERROR_FILE_NOT_REGULAR = 8,
+	OAL_ERROR_FILE_NOT_REGULAR = 7,
 	/** An error occured but no specific error code is implemented - this may be
 	 * used for some edge cases. */
-	OAL_ERROR_UNKNOWN_ERROR = 9,
+	OAL_ERROR_UNKNOWN_ERROR = 8,
 	/** The specified error code does not exists */
-	OAL_ERROR_NO_MATCH_ERROR = 10,
+	OAL_ERROR_NO_MATCH_ERROR = 9,
 	/** Used internally by OsAbstLibrary - do not use it */
 	OAL_ERROR_ENUM_END
 } OAL_error;

@@ -36,11 +36,6 @@ wchar_t *p_utf8_to_alloc_utf16(const char *src)
 	wchar_t *utf16_str;
 	int utf16_n_chars;
 
-	if(!src) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		return NULL;
-	}
-
 	/* First, we need to get the required size of the buffer. */
 	utf16_n_chars = MultiByteToWideChar(CP_UTF8, 0, src, -1, NULL, 0);
 	if(!utf16_n_chars) {
@@ -70,11 +65,6 @@ char *p_utf16_to_alloc_utf8(const wchar_t *src)
 {
 	char *utf8_str = NULL;
 	int utf8_n_chars;
-
-	if(!src) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		goto error_exit;
-	}
 
 	if(!(utf8_n_chars = WideCharToMultiByte(CP_UTF8, 0,
 					src, -1,

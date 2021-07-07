@@ -35,11 +35,6 @@ long OAL_get_dir_file_count(const char *dir)
 	struct dirent *entry;
 	long count = 0;
 
-	if(!dir) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		return 0;
-	}
-
 	if(!(dir_strm = opendir(dir))) {
 		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
 		else if(errno == ENOTDIR) p_set_error(OAL_ERROR_NOT_A_DIR);

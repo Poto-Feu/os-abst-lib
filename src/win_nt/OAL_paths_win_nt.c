@@ -74,10 +74,7 @@ int OAL_get_user_data_dir(char *buffer, size_t size)
 	char *LOCALAPPDATA_env = NULL;
 	int return_val = -1;
 
-	if(!buffer) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		goto error_exit;
-	} else if(size == 0 || size == 1) {
+	if(size == 0 || size == 1) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		goto error_exit;
 	} else if(!(LOCALAPPDATA_env = get_alloc_env_str("LOCALAPPDATA"))) {
@@ -130,10 +127,7 @@ static int get_win32_api_path(char *buffer, size_t size,
 	size_t max_fp_len;
 	int return_val = -1;
 
-	if(!buffer) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		goto error_exit;
-	} else if(size == 0) {
+	if(size == 0) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		goto error_exit;
 	} else if(!(max_fp_len = OAL_get_max_filepath_len())) {

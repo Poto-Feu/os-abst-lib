@@ -43,11 +43,6 @@ static void test_errors(void)
 	assert((max_filepath_len = OAL_get_max_filepath_len()) != 0);
 	assert((exec_dir = calloc(max_filepath_len, sizeof(char))));
 
-	assert(OAL_get_executable_dir(NULL, max_filepath_len) != 0);
-	assert(OAL_get_last_error() == OAL_ERROR_NULL_PTR);
-	assert(OAL_get_executable_dir(exec_dir, 4) != 0);
-	assert(OAL_get_last_error() == OAL_ERROR_BUFFER_SIZE);
-
 	for(wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
 		assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
 		assert(OAL_get_working_dir(exec_dir, wrong_dir_len) != 0);

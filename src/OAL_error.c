@@ -26,7 +26,6 @@
  * a O(1) access time. */
 const char *error_strs[] = {
 	"No error happened", /* OAL_ERROR_NO_ERROR */
-	"Pointer set to NULL", /* OAL_ERROR_NULL_PTR */
 	"Allocation failed", /* OAL_ERROR_ALLOC_FAILED */
 	"File does not exists", /* OAL_ERROR_FILE_NOT_EXISTS */
 	"Invalid filesystem permissions", /* OAL_ERROR_FILE_PERMS */

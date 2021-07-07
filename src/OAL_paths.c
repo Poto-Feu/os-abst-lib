@@ -68,10 +68,7 @@ int OAL_get_executable_dir(char *buffer, size_t size)
 	int return_val = -1;
 	bool is_NUL_encountered = false;
 	
-	if(!buffer) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		goto error_exit;
-	} else if(size == 0 || size == 1) {
+	if(size == 0 || size == 1) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
 		goto error_exit;
 	} else if(exec_path_length == 0) goto error_exit;

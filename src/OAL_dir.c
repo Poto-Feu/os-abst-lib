@@ -41,11 +41,8 @@
 
 static int OAL_create_non_recursive_dir(const char *path)
 {
-	if(!path) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		return -1;
 	/* Check if folder exists to not catch "file already exists"-like errors */
-	} else if(OAL_file_exists(path) != 0) {
+	if(OAL_file_exists(path) != 0) {
 		if(mkdir(path, 0777) == 0) return 0;
 		else if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
 		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
@@ -57,11 +54,6 @@ static int OAL_create_non_recursive_dir(const char *path)
 int OAL_create_dir(const char *path)
 {
 	size_t i;
-
-	if(!path) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		return -1;
-	}
 
 	for(i = 0; i < strlen(path); ++i) {
 		if(i == strlen(path) - 1) {

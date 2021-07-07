@@ -43,17 +43,12 @@ char *OAL_strdup(const char *src)
 {
 	char *str;
 
-	if(!src) {
-		p_set_error(OAL_ERROR_NULL_PTR);
-		return NULL;
-	}
 #if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 	if(!(str = strdup(src))) {
 #else
 	if(!(str = custom_strdup(src))) {
 #endif
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
-		return NULL;
 	}
 	return str;
 }
