@@ -21,8 +21,11 @@
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
 #include <assert.h>
+#include <stdlib.h>
 
-#include <windows.h>
+#include <errhandlingapi.h>
+#include <stringapiset.h>
+#include <winerror.h>
 
 #include "win_nt/private_funcs_win_nt.h"
 #include "OAL_string.h"

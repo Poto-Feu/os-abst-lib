@@ -20,11 +20,14 @@
 #include "OAL_os.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <windows.h>
+
+#include <errhandlingapi.h>
+#include <libloaderapi.h>
+#include <processenv.h>
+#include <winerror.h>
 
 #include "OAL_paths.h"
 #include "OAL_dir.h"
