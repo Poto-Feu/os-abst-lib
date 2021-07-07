@@ -30,11 +30,31 @@
 #include "win_nt/private_funcs_win_nt.h"
 #endif
 
-#ifdef OAL_IS_POSIX
-#define SIZE_T_PRINTF "%lu"
-#else
-#define SIZE_T_PRINTF "%I64u"
-#endif
+/* Code style rules are greatly relaxed for writing tests */
+
+static void test_errors(void)
+{
+	char *exec_dir;
+	OAL_error error_code = OAL_get_last_error();
+	size_t max_filepath_len;
+	long wrong_dir_len;
+
+	assert(error_code == OAL_ERROR_NO_ERROR);
+	assert((max_filepath_len = OAL_get_max_filepath_len()) != 0);
+	assert((exec_dir = calloc(max_filepath_len, sizeof(char))));
+
+	assert(OAL_get_executable_dir(NULL, max_filepath_len) != 0);
+	assert(OAL_get_last_error() == OAL_ERROR_NULL_PTR);
+	assert(OAL_get_executable_dir(exec_dir, 4) != 0);
+	assert(OAL_get_last_error() == OAL_ERROR_BUFFER_SIZE);
+
+	for(wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
+		assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
+		assert(OAL_get_working_dir(exec_dir, wrong_dir_len) != 0);
+		assert(OAL_get_user_data_dir(exec_dir, wrong_dir_len) != 0);
+	}
+	free(exec_dir);
+}
 
 static void test_win_utf8(void)
 {
@@ -55,24 +75,37 @@ static void test_win_utf8(void)
 #endif
 }
 
-static void test_errors(void)
+static void test_paths(void)
 {
+	char *working_dir, *user_data_dir, *exec_dir;
+	size_t exec_dir_len = OAL_get_executable_dir_len();
+	size_t working_dir_len = OAL_get_working_dir_len();
+	size_t user_data_dir_len = OAL_get_user_data_dir_len();
 	size_t max_filepath_len = OAL_get_max_filepath_len();
-	size_t wrong_dir_len;
-	char *exec_dir = calloc(max_filepath_len, sizeof(char));
 
-	assert(OAL_get_executable_dir(NULL, max_filepath_len) != 0);
-	assert(OAL_get_last_error() == OAL_ERROR_NULL_PTR);
-	assert(OAL_get_executable_dir(exec_dir, 4) != 0);
-	assert(OAL_get_last_error() == OAL_ERROR_BUFFER_SIZE);
+	assert(exec_dir_len != 0);
+	assert(working_dir_len != 0);
+	assert(user_data_dir_len != 0);
 
-	for(wrong_dir_len = 0; wrong_dir_len < 3; ++wrong_dir_len) {
-		assert(OAL_get_executable_dir(exec_dir, wrong_dir_len) != 0);
-		assert(OAL_get_working_dir(exec_dir, wrong_dir_len) != 0);
-		assert(OAL_get_user_data_dir(exec_dir, wrong_dir_len) != 0);
-	}
+	working_dir = calloc(working_dir_len, sizeof(char));
+	user_data_dir = calloc(user_data_dir_len, sizeof(char));
+	assert((exec_dir = calloc(max_filepath_len, sizeof(char))));
+
+	assert(OAL_get_executable_dir(exec_dir, exec_dir_len) == 0);
+	assert(OAL_get_working_dir(working_dir, working_dir_len) == 0);
+	assert(OAL_get_user_data_dir(user_data_dir, user_data_dir_len) == 0);
+
+	printf("executable directory: %s\n", exec_dir);
+	printf("working directory: %s\n", working_dir);
+	printf("user data path: %s\n", user_data_dir);
+
+	assert(exec_dir_len == strlen(exec_dir) + 1);
+	assert(working_dir_len == strlen(working_dir) + 1);
+	assert(user_data_dir_len == strlen(user_data_dir) + 1);
 
 	free(exec_dir);
+	free(working_dir);
+	free(user_data_dir);
 }
 
 static bool create_empty_text_file(const char *path)
@@ -84,6 +117,25 @@ static bool create_empty_text_file(const char *path)
 		fclose(text_file);
 		return true;
 	}
+}
+
+static void test_text_files(void)
+{
+	const char *text_file_strs[] = {
+		"test_dir/text.txt",
+		"test_dir/text-2.txt",
+		"test_dir/text-3.txt",
+	};
+	size_t i;
+
+	for(i = 0; i < sizeof(text_file_strs) / sizeof(text_file_strs[0]);
+			++i) {
+		assert(create_empty_text_file(text_file_strs[i]));
+		assert(OAL_is_file_regular(text_file_strs[i]) == 0);
+	}
+
+	assert(OAL_get_dir_file_count("test_dir")
+			== sizeof(text_file_strs) / sizeof(text_file_strs[0]));
 }
 
 static void rmdir_recurs_relative(const char *dir)
@@ -104,46 +156,16 @@ static void rmdir_recurs_relative(const char *dir)
 	free(full_system_cmd);
 }
 
-/* Code style rules are greatly relaxed for writing tests */
-int main(void)
+static void test_dirs(void)
 {
 	const char *dir_strs[] = {
 		"test_dir/test_dir_sub/",
 		"test_dir2/test_dir_sub",
 		"test_dir3/test_dir_sub"
 	};
-	const char *text_file_strs[] = {
-		"test_dir/text.txt",
-		"test_dir/text-2.txt",
-		"test_dir/text-3.txt",
-	};
 	const char *fake_dir_str = "test_dir58/test_dir_sub/";
 	const char *rendundant_dir_str = "test_dir2/test_dir_sub/";
-	size_t max_filepath_len = OAL_get_max_filepath_len();
-	size_t exec_dir_len = OAL_get_executable_dir_len();
-	size_t work_dir_len = OAL_get_working_dir_len();
-	size_t user_data_dir_len = OAL_get_user_data_dir_len();
 	size_t i;
-	char *exec_dir = calloc(max_filepath_len, sizeof(char));
-	char *working_dir = calloc(work_dir_len, sizeof(char));
-	char *user_data_dir = calloc(user_data_dir_len, sizeof(char));
-	char *test_strdup_str = OAL_strdup("test string strdup");
-	OAL_error error_code = OAL_get_last_error();
-
-	test_win_utf8();
-
-	assert(max_filepath_len != 0);
-	assert(exec_dir_len != 0);
-	assert(work_dir_len != 0);
-	assert(user_data_dir_len != 0);
-	assert(test_strdup_str);
-
-	assert(error_code == OAL_ERROR_NO_ERROR);
-
-	free(test_strdup_str);
-	printf("exec_dir_length:" SIZE_T_PRINTF "\n", exec_dir_len);
-	printf("work_dir_length:" SIZE_T_PRINTF "\n", work_dir_len);
-	printf("user_data_dir_length:" SIZE_T_PRINTF "\n", user_data_dir_len);
 
 	for(i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
 		assert(OAL_create_dir(dir_strs[i]) == 0);
@@ -152,20 +174,7 @@ int main(void)
 	assert(OAL_file_exists(fake_dir_str) != 0);
 	assert(OAL_file_exists(rendundant_dir_str) == 0);
 
-	for(i = 0; i < sizeof(text_file_strs) / sizeof(text_file_strs[0]);
-			++i) {
-		assert(create_empty_text_file(text_file_strs[i]));
-		assert(OAL_is_file_regular(text_file_strs[i]) == 0);
-	}
-
-	assert(OAL_get_dir_file_count("test_dir")
-			== sizeof(text_file_strs) / sizeof(text_file_strs[0]));
-
-	assert(OAL_get_executable_dir(exec_dir, exec_dir_len) == 0);
-	assert(OAL_get_working_dir(working_dir, work_dir_len) == 0);
-	assert(OAL_get_user_data_dir(user_data_dir, user_data_dir_len) == 0);
-
-	test_errors();
+	test_text_files();
 
 	for(i = 0; i < sizeof(dir_strs) / sizeof(dir_strs[0]); ++i) {
 		char *str_dup = OAL_strdup(dir_strs[i]);
@@ -175,13 +184,23 @@ int main(void)
 		rmdir_recurs_relative(str_dup);
 		free(str_dup);
 	}
+}
 
-	printf("executable directory: %s\n", exec_dir);
-	printf("working directory: %s\n", working_dir);
-	printf("user data path: %s\n", user_data_dir);
-	free(exec_dir);
-	free(working_dir);
-	free(user_data_dir);
+static void test_string(void)
+{
+	char *test_strdup_str;
+
+	assert((test_strdup_str = OAL_strdup("test string strdup")));
+	free(test_strdup_str);
+}
+
+int main(void)
+{
+	test_errors();
+	test_win_utf8();
+	test_string();
+	test_paths();
+	test_dirs();
 
 	return EXIT_SUCCESS;
 }
