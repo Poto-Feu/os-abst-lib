@@ -130,7 +130,7 @@ static void test_text_files(void)
 	}
 
 	assert(OAL_get_dir_file_count("test_dir")
-			== sizeof(text_file_strs) / sizeof(text_file_strs[0]));
+			== sizeof(text_file_strs) / sizeof(text_file_strs[0]) + 1);
 }
 
 static void rmdir_recurs_relative(const char *dir)

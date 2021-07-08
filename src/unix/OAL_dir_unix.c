@@ -23,6 +23,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <dirent.h>
 
@@ -43,7 +44,7 @@ long OAL_get_dir_file_count(const char *dir)
 	}
 
 	while((entry = readdir(dir_strm)) && count != LONG_MAX) {
-		if(entry->d_type == DT_REG) ++count;
+		if(entry->d_name[0] != '.') ++count;
 	}
 	closedir(dir_strm);
 

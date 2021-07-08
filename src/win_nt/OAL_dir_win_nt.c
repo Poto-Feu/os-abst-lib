@@ -69,7 +69,11 @@ long OAL_get_dir_file_count(const char *dir)
 
 	while(FindNextFileW(file_handle, &file_data) != FALSE
 			&& count != LONG_MAX) {
-		if(!(file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) ++count;
+		if(wcscmp(file_data.cFileName, L"..") != 0 &&
+				wcscmp(file_data.cFileName, L".") != 0
+				&& !(file_data.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)) {
+			++count;
+		}
 	}
 
 	FindClose(file_handle);
