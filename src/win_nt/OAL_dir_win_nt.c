@@ -24,6 +24,7 @@
 #include <limits.h>
 #include <string.h>
 
+#include <errhandlingapi.h>
 #include <fileapi.h>
 #include <handleapi.h>
 #include <minwinbase.h>
@@ -33,6 +34,23 @@
 #include "OAL_file.h"
 #include "private_funcs.h"
 #include "win_nt/private_funcs_win_nt.h"
+
+int p_create_non_recursive_dir(const char *path)
+{
+	wchar_t *path_w;
+
+	if(!(path_w = p_utf8_to_alloc_utf16(path))) return -1;
+	else if(!CreateDirectoryW(path_w, NULL)) {
+		DWORD err = GetLastError();
+
+		free(path_w);
+		if(err == ERROR_ALREADY_EXISTS) return 0;
+		else return -1;
+	} else {
+		free(path_w);
+		return 0;
+	}
+}
 
 long OAL_get_dir_file_count(const char *dir)
 {

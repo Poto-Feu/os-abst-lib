@@ -29,28 +29,6 @@
 #include "OAL_string.h"
 #include "private_funcs.h"
 
-#if defined(OAL_IS_POSIX)
-#include <unistd.h>
-
-#elif OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-#include <direct.h>
-
-#define getcwd _getcwd
-#define mkdir(x, y) _mkdir(x)
-#endif
-
-static int OAL_create_non_recursive_dir(const char *path)
-{
-	/* Check if folder exists to not catch "file already exists"-like errors */
-	if(OAL_file_exists(path) != 0) {
-		if(mkdir(path, 0777) == 0) return 0;
-		else if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
-		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
-
-		return -1;
-	} else return 0;
-}
-
 int OAL_create_dir(const char *path)
 {
 	size_t i;
@@ -71,7 +49,7 @@ int OAL_create_dir(const char *path)
 					current_directory[i] = '\0';
 				}
 
-				rtrn_val = OAL_create_non_recursive_dir(current_directory);
+				rtrn_val = p_create_non_recursive_dir(current_directory);
 				free(current_directory);
 
 				return rtrn_val;
@@ -90,7 +68,7 @@ int OAL_create_dir(const char *path)
 
 			if(OAL_file_exists(current_directory) != 0) {
 				/* Error code set by OAL_create_non_recursive_dir */
-				if(OAL_create_non_recursive_dir(current_directory) != 0) {
+				if(p_create_non_recursive_dir(current_directory) != 0) {
 					free(current_directory);
 					return -1;
 				}

@@ -25,6 +25,8 @@
 
 bool p_is_dir_separator(char ch);
 
+int p_create_non_recursive_dir(const char *path);
+
 void p_set_error(OAL_error error);
 OAL_error p_get_current_error(void);
 #endif
