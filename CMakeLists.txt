@@ -9,6 +9,7 @@ endif()
 
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_STANDARD_REQUIRED True)
+set(CMAKE_C_EXTENSIONS False)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
@@ -20,6 +21,10 @@ elseif(MSVC)
 else()
 	message(WARNING "compiler and linker flags are only set if Clang or GCC\
 	is used")
+endif()
+
+if(UNIX)
+	add_compile_definitions(_XOPEN_SOURCE=500)
 endif()
 
 add_library(OsAbstLib SHARED
