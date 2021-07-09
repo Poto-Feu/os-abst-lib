@@ -51,6 +51,8 @@ typedef enum {
 	OAL_ERROR_UNKNOWN_ERROR = 8,
 	/** The specified error code does not exists */
 	OAL_ERROR_NO_MATCH_ERROR = 9,
+	/** The fopen mode is invalid */
+	OAL_ERROR_INVALID_MODE = 10,
 	/** Used internally by OsAbstLibrary - do not use it */
 	OAL_ERROR_ENUM_END
 } OAL_error;

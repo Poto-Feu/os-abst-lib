@@ -20,6 +20,7 @@
 #include "OAL_os.h"
 
 #ifdef OAL_IS_POSIX
+#include <errno.h>
 #include <stdlib.h>
 
 #include <unistd.h>
@@ -48,5 +49,15 @@ int OAL_is_file_regular(const char *path)
 		p_set_error(OAL_ERROR_FILE_NOT_REGULAR);
 		return -1;
 	} else return 0;
+}
+
+FILE *OAL_open_file(const char *path, const char *mode)
+{
+	FILE *stream;
+
+	if(!(stream = fopen(path, mode))) {
+		p_set_fopen_error();
+		return NULL;
+	} else return stream;
 }
 #endif

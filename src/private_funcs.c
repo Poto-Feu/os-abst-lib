@@ -17,6 +17,8 @@
     along with OsAbstLibrary. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <errno.h>
+
 #include "private_funcs.h"
 
 static OAL_error current_error = OAL_ERROR_NO_ERROR;
@@ -38,4 +40,22 @@ void p_set_error(OAL_error error)
 OAL_error p_get_current_error(void)
 {
 	return current_error;
+}
+
+void p_set_fopen_error(void)
+{
+	switch(errno) {
+		case EINVAL:
+			p_set_error(OAL_ERROR_INVALID_MODE);
+			break;
+		case ENOMEM:
+			p_set_error(OAL_ERROR_ALLOC_FAILED);
+			break;
+		case EACCES:
+			p_set_error(OAL_ERROR_FILE_PERMS);
+			break;
+		default:
+			p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+			break;
+	}
 }

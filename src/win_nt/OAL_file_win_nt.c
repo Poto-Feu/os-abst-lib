@@ -20,7 +20,11 @@
 #include "OAL_os.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#include <errhandlingapi.h>
+#include <fcntl.h>
 #include <fileapi.h>
+#include <handleapi.h>
+#include <winerror.h>
 
 #include "OAL_file.h"
 #include "private_funcs.h"
@@ -62,5 +66,24 @@ int OAL_is_file_regular(const char *path)
 		return -1;
 	} else return 0;
 	
+}
+
+FILE *OAL_open_file(const char *path, const char *mode)
+{
+	wchar_t *path_w = NULL;
+	wchar_t *mode_w = NULL;
+	FILE *stream = NULL;
+
+	if(!(path_w = p_utf8_to_alloc_utf16(path))) goto error_exit;
+	else if(!(mode_w = p_utf8_to_alloc_utf16(mode))) goto error_exit;
+	else if(!(stream = _wfopen(path_w, mode_w))) {
+		p_set_fopen_error();
+		goto error_exit;
+	}
+
+error_exit:
+	free(path_w);
+	free(mode_w);
+	return stream;
 }
 #endif

@@ -20,6 +20,8 @@
 #ifndef OS_FILE_H
 #define OS_FILE_H
 
+#include <stdio.h>
+
 /**
  * @file OAL_file.h
  *
@@ -50,4 +52,19 @@ int OAL_file_exists(const char *path);
  * the error code for more information).
  */
 int OAL_is_file_regular(const char *path);
+
+/**
+ * @brief Return a file pointer to the specified file
+ *
+ * If not equal to NULL, the FILE pointer must be passed to fclose when it is
+ * not needed anymore. Any standard C function can use the returned FILE
+ * pointer.
+ *
+ * @param path The path pointing to the file to open
+ * @param mode The fopen mode
+ *
+ * @return a FILE pointer to the specified file path if no error occured,
+ * else NULL.
+ */
+FILE *OAL_open_file(const char *path, const char *mode);
 #endif

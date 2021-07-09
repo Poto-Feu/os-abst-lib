@@ -34,7 +34,8 @@ const char *error_strs[] = {
 	"Buffer size too small", /* OAL_ERROR_BUFFER_SIZE */
 	"File is not a regular file", /* OAL_ERROR_NOT_A_REGULAR_FILE */
 	"Unimplemented error code", /* OAL_ERROR_UNKNOWN_ERROR */
-	"Error code does not exists" /* OAL_ERROR_NO_MATCH_ERROR */
+	"Error code does not exists", /* OAL_ERROR_NO_MATCH_ERROR */
+	"Invalid fopen mode" /* OAL_ERROR_INVALID_MODE */
 };
 
 OAL_error OAL_get_last_error(void)

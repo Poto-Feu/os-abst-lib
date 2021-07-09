@@ -29,4 +29,6 @@ int p_create_non_recursive_dir(const char *path);
 
 void p_set_error(OAL_error error);
 OAL_error p_get_current_error(void);
+
+void p_set_fopen_error(void);
 #endif

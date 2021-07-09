@@ -57,7 +57,7 @@ static void test_win_utf8(void)
 	const char *utf8_file = "test_utf8_file.txt";
 	char *utf8_str;
 	wchar_t *utf16_str;
-	FILE *file_stream = fopen(utf8_file, "w");
+	FILE *file_stream = OAL_open_file(utf8_file, "a+b");
 
 	utf16_str = p_utf8_to_alloc_utf16("সﺽ");
 	utf8_str = p_utf16_to_alloc_utf8(utf16_str);
@@ -107,7 +107,7 @@ static bool create_empty_text_file(const char *path)
 {
 	FILE *text_file;
 
-	if(!(text_file = fopen(path, "w"))) return false;
+	if(!(text_file = OAL_open_file(path, "a+b"))) return false;
 	else {
 		fclose(text_file);
 		return true;
@@ -119,7 +119,9 @@ static void test_text_files(void)
 	const char *text_file_strs[] = {
 		"test_dir/text.txt",
 		"test_dir/text-2.txt",
-		"test_dir/text-3.txt",
+		/* An U+056D unicode character is used to test internal UTF-8
+		 * conversions. */
+		"test_dir/text-3խ.txt",
 	};
 	size_t i;
 
