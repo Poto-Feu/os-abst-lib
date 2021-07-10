@@ -28,27 +28,10 @@
 #define strdup _strdup
 #endif
 
-#if !defined(OAL_IS_POSIX) && OAL_TARGET_OS != OAL_OS_WINDOWS_NT
-static char *custom_strdup(const char *src)
-{
-	char *str;
-
-	if(!(str = malloc((strlen(src) + 1) * sizeof(char)))) return NULL;
-	strcpy(str, src);
-	return str;
-}
-#endif
-
 char *OAL_strdup(const char *src)
 {
 	char *str;
 
-#if defined(OAL_IS_POSIX) || OAL_TARGET_OS == OAL_OS_WINDOWS_NT
-	if(!(str = strdup(src))) {
-#else
-	if(!(str = custom_strdup(src))) {
-#endif
-		p_set_error(OAL_ERROR_ALLOC_FAILED);
-	}
+	if(!(str = strdup(src))) p_set_error(OAL_ERROR_ALLOC_FAILED);
 	return str;
 }
