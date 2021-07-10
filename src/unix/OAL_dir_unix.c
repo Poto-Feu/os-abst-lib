@@ -41,25 +41,4 @@ int p_create_non_recursive_dir(const char *path)
 
 	return -1;
 }
-
-long OAL_get_dir_file_count(const char *dir)
-{
-	DIR *dir_strm;
-	struct dirent *entry;
-	long count = 0;
-
-	if(!(dir_strm = opendir(dir))) {
-		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
-		else if(errno == ENOTDIR) p_set_error(OAL_ERROR_NOT_A_DIR);
-		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
-		return 0;
-	}
-
-	while((entry = readdir(dir_strm)) && count != LONG_MAX) {
-		if(entry->d_name[0] != '.') ++count;
-	}
-	closedir(dir_strm);
-
-	return count;
-}
 #endif

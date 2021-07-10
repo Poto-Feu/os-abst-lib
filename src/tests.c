@@ -130,9 +130,6 @@ static void test_text_files(void)
 		assert(create_empty_text_file(text_file_strs[i]));
 		assert(OAL_is_file_regular(text_file_strs[i]) == 0);
 	}
-
-	assert(OAL_get_dir_file_count("test_dir")
-			== sizeof(text_file_strs) / sizeof(text_file_strs[0]) + 1);
 	assert(OAL_remove_file(text_file_strs[2]) == 0);
 }
 
