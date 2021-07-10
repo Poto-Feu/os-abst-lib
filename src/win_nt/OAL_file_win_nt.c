@@ -20,6 +20,8 @@
 #include "OAL_os.h"
 
 #if OAL_TARGET_OS == OAL_OS_WINDOWS_NT
+#include <errno.h>
+
 #include <errhandlingapi.h>
 #include <fcntl.h>
 #include <fileapi.h>
@@ -85,5 +87,21 @@ error_exit:
 	free(path_w);
 	free(mode_w);
 	return stream;
+}
+
+int OAL_remove_file(const char *path)
+{
+	int return_val;
+	wchar_t *path_w = NULL;
+
+	if(!(path_w = p_utf8_to_alloc_utf16(path))) return -1;
+	else if((return_val = _wremove(path_w)) == -1) {
+		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
+		else if(errno == ENOENT) p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
+		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+	}
+
+	free(path_w);
+	return return_val;
 }
 #endif

@@ -67,4 +67,14 @@ int OAL_is_file_regular(const char *path);
  * else NULL.
  */
 FILE *OAL_open_file(const char *path, const char *mode);
+
+/**
+ * @brief Remove the file pointed by the path
+ *
+ * @param path The path pointing to the file to remove
+ *
+ * @return 0 if the function succeeds,
+ * -1 if an error occured.
+ */
+int OAL_remove_file(const char *path);
 #endif

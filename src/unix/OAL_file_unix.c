@@ -60,4 +60,13 @@ FILE *OAL_open_file(const char *path, const char *mode)
 		return NULL;
 	} else return stream;
 }
+
+int OAL_remove_file(const char *path)
+{
+	if(remove(path) == -1) {
+		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
+		else if(errno == ENOENT) p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
+		return -1;
+	} else return 0;
+}
 #endif
