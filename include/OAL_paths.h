@@ -20,8 +20,6 @@
 #ifndef OS_PATHS_H
 #define OS_PATHS_H
 
-#include <stddef.h>
-
 #include "OAL_os.h"
 
 /**
@@ -29,8 +27,17 @@
  *
  * @brief Paths-related OS functions.
  *
- * All returned paths are null-terminated except if the supplied buffer is too
- * small.
+ * If the specified buffer size is too small, the buffer is untouched and
+ * the minimal required size is returned. This means that a NULL pointer can
+ * be passed as buffer and 0 as value to get the required size of the buffer.
+ *
+ * If there is any copying, the returned path will be null-terminated.
+ *
+ * If size value is negative, the behavior is undefined.
+ *
+ * Note that the behavior of these functions are similar to strncpy: if the
+ * block pointed by buffer is shorter than the specified size, the behavior is
+ * undefined.
  */
 
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD \
@@ -41,18 +48,11 @@
  * @param buffer string pointer in which the path should be copied
  * @param size size of the buffer
  *
- * @return 0 if the string was successfully copied
- * a non-zero value if an error occured
+ * @return 0 if the string was successfully copied,
+ * the required size if the specified buffer size is too small,
+ * -1 if an error occured
  */
-long OAL_get_executable_path(char *buffer, size_t size);
-
-/**
- * @brief Return the executable path length.
- *
- * @return The path length if successful,
- * -1 if an error occured.
- */
-long OAL_get_executable_path_len(void);
+long OAL_get_executable_path(char *buffer, long size);
 
 /**
  * @brief Return the path of the directory containing the running executable.
@@ -60,18 +60,11 @@ long OAL_get_executable_path_len(void);
  * @param buffer string pointer in which the path should be copied
  * @param size size of the buffer
  *
- * @return 0 if the string was successfully copied
- * a non-zero value if an error occured
+ * @return 0 if the string was successfully copied,
+ * the required size if the specified buffer size is too small,
+ * -1 if an error occured
  */
-long OAL_get_executable_dir(char *buffer, size_t size);
-
-/**
- * @brief Return the executable directory path length.
- *
- * @return The path length if successful,
- * -1 if an error occured.
- */
-long OAL_get_executable_dir_len(void);
+long OAL_get_executable_dir(char *buffer, long size);
 #endif
 
 /**
@@ -80,18 +73,11 @@ long OAL_get_executable_dir_len(void);
  * @param buffer string pointer in which the path should be copied
  * @param size size of the buffer
  *
- * @return 0 if the string was successfully copied
- * a non-zero value if an error occured
+ * @return 0 if the string was successfully copied,
+ * the required size if the specified buffer size is too small,
+ * -1 if an error occured
  */
-long OAL_get_working_dir(char *buffer, size_t size);
-
-/**
- * @brief Return the user working directory path length.
- *
- * @return The path length if there was no error,
- * -1 if an error occured.
- */
-long OAL_get_working_dir_len(void);
+long OAL_get_working_dir(char *buffer, long size);
 
 /**
  * @brief Copy the user data directory path into a buffer.
@@ -102,17 +88,10 @@ long OAL_get_working_dir_len(void);
  * programmer.
  *
  * @return 0 if the string was successfully copied,
- * a non-zero value if an error occured.
+ * the required size if the specified buffer size is too small,
+ * -1 if an error occured
  */
-long OAL_get_user_data_dir(char *buffer, size_t size);
-
-/**
- * @brief Return the user data directory path length.
- *
- * @return The path length if successful,
- * -1 if an error occured.
- */
-long OAL_get_user_data_dir_len(void);
+long OAL_get_user_data_dir(char *buffer, long size);
 
 /**
  * @brief Return the maximum length of file paths on the running OS.

@@ -73,10 +73,9 @@ static void test_win_utf8(void)
 static void test_paths(void)
 {
 	char *working_dir, *user_data_dir, *exec_dir;
-	long exec_dir_len = OAL_get_executable_dir_len();
-	long working_dir_len = OAL_get_working_dir_len();
-	long user_data_dir_len = OAL_get_user_data_dir_len();
-	long max_filepath_len = OAL_get_max_filepath_len();
+	long exec_dir_len = OAL_get_executable_dir(NULL, 0);
+	long working_dir_len = OAL_get_working_dir(NULL, 0);
+	long user_data_dir_len = OAL_get_user_data_dir(NULL, 0);
 
 	assert(exec_dir_len != -1);
 	assert(working_dir_len != -1);
@@ -84,7 +83,7 @@ static void test_paths(void)
 
 	working_dir = calloc(working_dir_len, sizeof(char));
 	user_data_dir = calloc(user_data_dir_len, sizeof(char));
-	assert((exec_dir = calloc(max_filepath_len, sizeof(char))));
+	exec_dir = calloc(exec_dir_len, sizeof(char));
 
 	assert(OAL_get_executable_dir(exec_dir, exec_dir_len) == 0);
 	assert(OAL_get_working_dir(working_dir, working_dir_len) == 0);

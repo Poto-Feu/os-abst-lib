@@ -40,132 +40,158 @@
 
 const char *const user_data_dir_suffix = "/.local/share/";
 
+char *get_max_fp_len_block(long *path_len)
+{
+	char *block = NULL;
+	long max_fp_len;
+
+	if((max_fp_len = OAL_get_max_filepath_len()) == -1) return NULL;
+	else if(!(block = malloc(max_fp_len * sizeof(char)))) {
+		p_set_error(OAL_ERROR_ALLOC_FAILED);
+		return NULL;
+	} else if(path_len) *path_len = max_fp_len;
+	return block;
+}
+
 /* The XDG Base Directory Specs specifies that $HOME/.local/share should be
  * used if the XDG_DATA_HOME environment variable is not set. */
-static long OAL_get_user_data_dir_no_env(char *buffer, size_t size)
+static long OAL_get_user_data_dir_no_env(char *buffer, long size)
 {
 	const char *HOME_env = getenv("HOME");
-	size_t path_len;
+	long min_buf_size;
 
 	if(!HOME_env) {
 		p_set_error(OAL_ERROR_MISSING_ENV);
 		return -1;
 	}
 
-	path_len = strlen(HOME_env) + strlen(user_data_dir_suffix);
-	if(size < path_len + 1) {
+	min_buf_size = strlen(HOME_env) + strlen(user_data_dir_suffix) + 1;
+	if(size < min_buf_size) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		return -1;
+		return min_buf_size;
 	}
 
 	strcpy(buffer, HOME_env);
 	strcat(buffer, user_data_dir_suffix);
-	buffer[path_len] = '\0';
 
 	return 0;
 }
 
-long OAL_get_user_data_dir(char *buffer, size_t size)
+long OAL_get_user_data_dir(char *buffer, long size)
 {
 	const char *XDG_DATA_HOME_env = getenv("XDG_DATA_HOME");
 
 	if(XDG_DATA_HOME_env) {
-		strncpy(buffer, XDG_DATA_HOME_env, size);
-		if(buffer[size - 1] != '\0' || buffer[size - 2] != '\0') return -1;
+		long min_buf_size = strlen(XDG_DATA_HOME_env) + 2;
+
+		if(size < min_buf_size) {
+			p_set_error(OAL_ERROR_BUFFER_SIZE);
+			return min_buf_size;
+		}
+		strcpy(buffer, XDG_DATA_HOME_env);
 
 		buffer[strlen(buffer)] = OS_DIR_SEPARATOR;
 		return 0;
 	} else return OAL_get_user_data_dir_no_env(buffer, size);
 }
 
-long OAL_get_user_data_dir_len(void)
-{
-	const char *XDG_DATA_HOME_env = getenv("XDG_DATA_HOME");
-
-	/* 1 char for the slash separator and 1 char for the NULL terminator */
-	if(XDG_DATA_HOME_env) return strlen(XDG_DATA_HOME_env) + 2;
-	else {
-		const char *HOME_env = getenv("HOME");
-
-		/* Add 1 character for the null terminator */
-		if(!HOME_env) {
-			p_set_error(OAL_ERROR_MISSING_ENV);
-			return -1;
-		} else return strlen(HOME_env) + strlen(user_data_dir_suffix) + 1; 
-	}
-}
-
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD
-long OAL_get_executable_path(char *buffer, size_t size)
+long OAL_get_executable_path(char *buffer, long size)
 {
-	if(size == 0 || size == 1) {
-		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		return -1;
-	}
-
 	/* This is a tricky part since each POSIX OS has its own way of fetching
 	 * the path of the currently running executable. Hence this function must
 	 * be manually ported. */
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX
-	ssize_t readlink_rtrn = readlink("/proc/self/exe", buffer, size);
+	ssize_t readlink_rtrn;
+#elif OAL_TARGET_OS == OAL_OS_FREEBSD
+	int mib[4];
+	size_t max_fp_len_st;
+#endif
+	char *tmp_buf = NULL;
+	long min_buf_size;
+	long max_fp_len;
 
+	if(!(tmp_buf = get_max_fp_len_block(&max_fp_len))) return -1;
+#if OAL_TARGET_OS == OAL_OS_GNU_LINUX
+	readlink_rtrn = readlink("/proc/self/exe", tmp_buf, max_fp_len);
 	if(readlink_rtrn == -1) {
 		if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
 		else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		free(tmp_buf);
 		return -1;
-	} else if((size_t)readlink_rtrn >= size) {
-		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		return -1;
-	} else {
-		buffer[readlink_rtrn] = '\0';
-		return 0;
 	}
 
+	min_buf_size = readlink_rtrn + 1;
+	if(size < min_buf_size) {
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
+		free(tmp_buf);
+		return min_buf_size;
+	}
+	tmp_buf[readlink_rtrn] = '\0';
+	strcpy(buffer, tmp_buf);
 #elif OAL_TARGET_OS == OAL_OS_FREEBSD
-	int mib[4];
-
+	max_fp_len_st = (size_t)max_fp_len;
 	mib[0] = CTL_KERN;
 	mib[1] = KERN_PROC;
 	mib[2] = KERN_PROC_PATHNAME;
 	mib[3] = -1;
 
-	--size;
+	if(sysctl(mib, 4, tmp_buf, &max_fp_len_st, NULL, 0) != 0) {
+		if(errno == EACCES || errno == EPERM) {
+			p_set_error(OAL_ERROR_FILE_PERMS);
+			free(tmp_buf);
+			return -1;
+		} else {
+			p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+			free(tmp_buf);
+			return -1;
+		}
+	}
+	tmp_buf[max_fp_len_st - 1] = '\0';
 
-	if(sysctl(mib, 4, buffer, &size, NULL, 0) == 0) {
-		buffer[size] = '\0';
-		return 0;
-	} else if(errno == EACCES || errno == EPERM) {
-		p_set_error(OAL_ERROR_FILE_PERMS);
-		return -1;
-	} else {
-		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
-		return -1;
+	min_buf_size = strlen(tmp_buf) + 1;
+	if(size < min_buf_size) {
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
+		free(tmp_buf);
+		return min_buf_size;
 	}
 #endif
+	free(tmp_buf);
+	return 0;
 }
 #else
 #warning "OAL_get_executable_path is not available on your system"
 #endif
 
-long OAL_get_working_dir(char *buffer, size_t size)
+long OAL_get_working_dir(char *buffer, long size)
 {
-	if(size == 0) {
-		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		return -1;
-	} else if(getcwd(buffer, size)) {
-		size_t path_len = strlen(buffer);
+	long max_fp_len;
+	long min_buf_size;
+	char *tmp_buf;
 
-		if(!p_is_dir_separator(buffer[path_len - 1])) {
-			if(path_len + 1 < size) {
-				buffer[path_len] = OS_DIR_SEPARATOR;
-				buffer[path_len + 1] = '\0';
-			} else return -1;
-		}
-		return 0;
-	} else {
+	if(!(tmp_buf = get_max_fp_len_block(&max_fp_len))) return -1;
+	else if(!getcwd(tmp_buf, max_fp_len)) {
 		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
+		free(tmp_buf);
 		return -1;
 	}
+
+	min_buf_size = strlen(tmp_buf) + 2;
+	if(size < min_buf_size) {
+		p_set_error(OAL_ERROR_BUFFER_SIZE);
+		free(tmp_buf);
+		return min_buf_size;
+	}
+
+	strcpy(buffer, tmp_buf);
+
+	if(!p_is_dir_separator(buffer[strlen(buffer) - 1])) {
+		buffer[min_buf_size - 2] = OS_DIR_SEPARATOR;
+		buffer[min_buf_size - 1] = '\0';
+	}
+	free(tmp_buf);
+
+	return 0;
 }
 
 long OAL_get_max_filepath_len(void)

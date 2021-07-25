@@ -69,42 +69,30 @@ error_exit:
 	return NULL;
 }
 
-long OAL_get_user_data_dir(char *buffer, size_t size)
+long OAL_get_user_data_dir(char *buffer, long size)
 {
 	char *LOCALAPPDATA_env = NULL;
 	long return_val = -1;
+	long min_buf_size;
 
-	if(size == 0 || size == 1) {
-		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		goto error_exit;
-	} else if(!(LOCALAPPDATA_env = get_alloc_env_str("LOCALAPPDATA"))) {
+	if(!(LOCALAPPDATA_env = get_alloc_env_str("LOCALAPPDATA"))) {
 		goto error_exit;
 	}
 
-	strncpy(buffer, LOCALAPPDATA_env, size);
-	if(buffer[size - 1] != '\0' || buffer[size - 2] != '\0') {
+	min_buf_size = strlen(LOCALAPPDATA_env) + 2;
+	if(size < min_buf_size) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		return -1;
+		return_val = min_buf_size;
+		goto error_exit;
 	}
-	buffer[strlen(buffer)] = OS_DIR_SEPARATOR;
+
+	strcpy(buffer, LOCALAPPDATA_env);
+	buffer[min_buf_size - 2] = OS_DIR_SEPARATOR;
+	buffer[min_buf_size - 1] = '\0';
 	return_val = 0;
 error_exit:
 	free(LOCALAPPDATA_env);
 	return return_val;
-}
-
-long OAL_get_user_data_dir_len(void)
-{
-	char *LOCALAPPDATA_env = NULL;
-
-	/* Add 2 characters for the end slash and the null terminator */
-	if(!(LOCALAPPDATA_env = get_alloc_env_str("LOCALAPPDATA"))) return -1;
-	else {
-		size_t len = strlen(LOCALAPPDATA_env) + 2;
-
-		free(LOCALAPPDATA_env);
-		return len;
-	}
 }
 
 static DWORD executable_path_wrapper(wchar_t *buf_w, DWORD size)
@@ -119,50 +107,55 @@ static DWORD working_dir_wrapper(wchar_t *buf_w, DWORD size)
 
 /* Since WIN32 functions to query paths are quite similar, we can avoid any
  * code duplication by passing a wrapper as a function pointer for each path */
-static long get_win32_api_path(char *buffer, size_t size,
+static long get_win32_api_path(char *buffer, long size, bool add_slash,
 		DWORD (*win32_wrapper)(wchar_t *buffer, DWORD size))
 {
 	wchar_t *buf_w = NULL;
 	char *tmp_buf = NULL;
-	long max_fp_len;
-	long return_val = -1;
+	long max_fp_len, min_buf_size;
+	long rtrn_val = -1;
 
-	if(size == 0) {
-		p_set_error(OAL_ERROR_BUFFER_SIZE);
-		goto error_exit;
-	} else if((max_fp_len = OAL_get_max_filepath_len()) == -1) {
-		goto error_exit;
-	} else if(!(buf_w = malloc(max_fp_len * sizeof(wchar_t)))) {
+	if((max_fp_len = OAL_get_max_filepath_len()) == -1) goto error_exit;
+	else if(!(buf_w = malloc(max_fp_len * sizeof(wchar_t)))) {
 		p_set_error(OAL_ERROR_ALLOC_FAILED);
 		goto error_exit;
 	} else if(!win32_wrapper(buf_w, max_fp_len)) {
 		p_set_error(OAL_ERROR_UNKNOWN_ERROR);
 		goto error_exit;
 	}
-	buf_w[max_fp_len - 1] = '\0';
 	if(!(tmp_buf = p_utf16_to_alloc_utf8(buf_w))) goto error_exit;
 
-	strncpy(buffer, tmp_buf, size);
-	if(buffer[size - 1] != '\0') {
+	min_buf_size = strlen(tmp_buf) + 1;
+	if(add_slash) ++min_buf_size;
+
+	if(size < min_buf_size) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
+		rtrn_val = min_buf_size;
 		goto error_exit;
 	}
 
-	return_val = 0;
+	strcpy(buffer, tmp_buf);
+	if(add_slash) {
+		long buf_len = strlen(buffer);
+
+		buffer[buf_len] = OS_DIR_SEPARATOR;
+		buffer[buf_len + 1] = '\0';
+	}
+	rtrn_val = 0;
 error_exit:
 	free(buf_w);
 	free(tmp_buf);
-	return return_val;
+	return rtrn_val;
 }
 
-long OAL_get_executable_path(char *buffer, size_t size)
+long OAL_get_executable_path(char *buffer, long size)
 {
-	return get_win32_api_path(buffer, size, executable_path_wrapper);
+	return get_win32_api_path(buffer, size, false, executable_path_wrapper);
 }
 
-long OAL_get_working_dir(char *buffer, size_t size)
+long OAL_get_working_dir(char *buffer, long size)
 {
-	return get_win32_api_path(buffer, size, working_dir_wrapper);
+	return get_win32_api_path(buffer, size, true, working_dir_wrapper);
 }
 
 long OAL_get_max_filepath_len(void)
