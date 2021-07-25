@@ -45,6 +45,9 @@ OAL_error p_get_current_error(void)
 void p_set_fopen_error(void)
 {
 	switch(errno) {
+		case ENOENT:
+			p_set_error(OAL_ERROR_FILE_NOT_EXISTS);
+			break;
 		case EINVAL:
 			p_set_error(OAL_ERROR_INVALID_MODE);
 			break;

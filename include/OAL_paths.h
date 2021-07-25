@@ -44,7 +44,7 @@
  * @return 0 if the string was successfully copied
  * a non-zero value if an error occured
  */
-int OAL_get_executable_path(char *buffer, size_t size);
+long OAL_get_executable_path(char *buffer, size_t size);
 
 /**
  * @brief Return the executable path length.
@@ -63,7 +63,7 @@ long OAL_get_executable_path_len(void);
  * @return 0 if the string was successfully copied
  * a non-zero value if an error occured
  */
-int OAL_get_executable_dir(char *buffer, size_t size);
+long OAL_get_executable_dir(char *buffer, size_t size);
 
 /**
  * @brief Return the executable directory path length.
@@ -83,7 +83,7 @@ long OAL_get_executable_dir_len(void);
  * @return 0 if the string was successfully copied
  * a non-zero value if an error occured
  */
-int OAL_get_working_dir(char *buffer, size_t size);
+long OAL_get_working_dir(char *buffer, size_t size);
 
 /**
  * @brief Return the user working directory path length.
@@ -104,7 +104,7 @@ long OAL_get_working_dir_len(void);
  * @return 0 if the string was successfully copied,
  * a non-zero value if an error occured.
  */
-int OAL_get_user_data_dir(char *buffer, size_t size);
+long OAL_get_user_data_dir(char *buffer, size_t size);
 
 /**
  * @brief Return the user data directory path length.

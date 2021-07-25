@@ -59,13 +59,13 @@ long OAL_get_executable_path_len(void)
 	}
 }
 
-int OAL_get_executable_dir(char *buffer, size_t size)
+long OAL_get_executable_dir(char *buffer, size_t size)
 {
 	char *exec_path = NULL;
 	long final_slash_pos = -1;
 	long exec_path_length = OAL_get_max_filepath_len();
 	long i;
-	int return_val = -1;
+	long return_val = -1;
 	bool is_NUL_encountered = false;
 	
 	if(size == 0 || size == 1) {

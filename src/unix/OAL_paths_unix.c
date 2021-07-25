@@ -42,7 +42,7 @@ const char *const user_data_dir_suffix = "/.local/share/";
 
 /* The XDG Base Directory Specs specifies that $HOME/.local/share should be
  * used if the XDG_DATA_HOME environment variable is not set. */
-static int OAL_get_user_data_dir_no_env(char *buffer, size_t size)
+static long OAL_get_user_data_dir_no_env(char *buffer, size_t size)
 {
 	const char *HOME_env = getenv("HOME");
 	size_t path_len;
@@ -65,7 +65,7 @@ static int OAL_get_user_data_dir_no_env(char *buffer, size_t size)
 	return 0;
 }
 
-int OAL_get_user_data_dir(char *buffer, size_t size)
+long OAL_get_user_data_dir(char *buffer, size_t size)
 {
 	const char *XDG_DATA_HOME_env = getenv("XDG_DATA_HOME");
 
@@ -96,7 +96,7 @@ long OAL_get_user_data_dir_len(void)
 }
 
 #if OAL_TARGET_OS == OAL_OS_GNU_LINUX || OAL_TARGET_OS == OAL_OS_FREEBSD
-int OAL_get_executable_path(char *buffer, size_t size)
+long OAL_get_executable_path(char *buffer, size_t size)
 {
 	if(size == 0 || size == 1) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
@@ -147,7 +147,7 @@ int OAL_get_executable_path(char *buffer, size_t size)
 #warning "OAL_get_executable_path is not available on your system"
 #endif
 
-int OAL_get_working_dir(char *buffer, size_t size)
+long OAL_get_working_dir(char *buffer, size_t size)
 {
 	if(size == 0) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);

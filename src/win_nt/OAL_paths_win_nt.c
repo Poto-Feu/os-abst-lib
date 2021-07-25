@@ -69,10 +69,10 @@ error_exit:
 	return NULL;
 }
 
-int OAL_get_user_data_dir(char *buffer, size_t size)
+long OAL_get_user_data_dir(char *buffer, size_t size)
 {
 	char *LOCALAPPDATA_env = NULL;
-	int return_val = -1;
+	long return_val = -1;
 
 	if(size == 0 || size == 1) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
@@ -119,13 +119,13 @@ static DWORD working_dir_wrapper(wchar_t *buf_w, DWORD size)
 
 /* Since WIN32 functions to query paths are quite similar, we can avoid any
  * code duplication by passing a wrapper as a function pointer for each path */
-static int get_win32_api_path(char *buffer, size_t size,
+static long get_win32_api_path(char *buffer, size_t size,
 		DWORD (*win32_wrapper)(wchar_t *buffer, DWORD size))
 {
 	wchar_t *buf_w = NULL;
 	char *tmp_buf = NULL;
 	long max_fp_len;
-	int return_val = -1;
+	long return_val = -1;
 
 	if(size == 0) {
 		p_set_error(OAL_ERROR_BUFFER_SIZE);
@@ -155,12 +155,12 @@ error_exit:
 	return return_val;
 }
 
-int OAL_get_executable_path(char *buffer, size_t size)
+long OAL_get_executable_path(char *buffer, size_t size)
 {
 	return get_win32_api_path(buffer, size, executable_path_wrapper);
 }
 
-int OAL_get_working_dir(char *buffer, size_t size)
+long OAL_get_working_dir(char *buffer, size_t size)
 {
 	return get_win32_api_path(buffer, size, working_dir_wrapper);
 }
