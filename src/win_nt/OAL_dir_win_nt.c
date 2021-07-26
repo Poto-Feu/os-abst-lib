@@ -38,17 +38,12 @@
 int p_create_non_recursive_dir(const char *path)
 {
 	wchar_t *path_w;
+	bool rtrn_val = 0;
 
 	if(!(path_w = p_utf8_to_alloc_utf16(path))) return -1;
-	else if(!CreateDirectoryW(path_w, NULL)) {
-		DWORD err = GetLastError();
+	else if(!CreateDirectoryW(path_w, NULL)) rtrn_val = -1;
 
-		free(path_w);
-		if(err == ERROR_ALREADY_EXISTS) return 0;
-		else return -1;
-	} else {
-		free(path_w);
-		return 0;
-	}
+	free(path_w);
+	return rtrn_val;
 }
 #endif

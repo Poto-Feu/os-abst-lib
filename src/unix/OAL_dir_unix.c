@@ -34,7 +34,9 @@
 
 int p_create_non_recursive_dir(const char *path)
 {
-	/* Check if folder exists to not catch "file already exists"-like errors */
+	/* Since mkdir fails if the file already exists and we have checked that
+	 * it did not exists before calling this function, race conditions are
+	 * mitigated. */
 	if(mkdir(path, 0777) == 0) return 0;
 	else if(errno == EACCES) p_set_error(OAL_ERROR_FILE_PERMS);
 	else p_set_error(OAL_ERROR_UNKNOWN_ERROR);
