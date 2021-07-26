@@ -128,7 +128,6 @@ long OAL_get_executable_path(char *buffer, long size)
 		return min_buf_size;
 	}
 	tmp_buf[readlink_rtrn] = '\0';
-	strcpy(buffer, tmp_buf);
 #elif OAL_TARGET_OS == OAL_OS_FREEBSD
 	max_fp_len_st = (size_t)max_fp_len;
 	mib[0] = CTL_KERN;
@@ -156,6 +155,7 @@ long OAL_get_executable_path(char *buffer, long size)
 		return min_buf_size;
 	}
 #endif
+	strcpy(buffer, tmp_buf);
 	free(tmp_buf);
 	return 0;
 }
