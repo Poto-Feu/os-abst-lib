@@ -51,7 +51,7 @@ int OAL_is_file_regular(const char *path)
 	} else return 0;
 }
 
-FILE *OAL_open_file(const char *path, const char *mode)
+FILE *OAL_fopen(const char *path, const char *mode)
 {
 	FILE *stream;
 

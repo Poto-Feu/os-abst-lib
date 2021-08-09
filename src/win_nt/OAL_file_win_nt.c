@@ -70,7 +70,7 @@ int OAL_is_file_regular(const char *path)
 	
 }
 
-FILE *OAL_open_file(const char *path, const char *mode)
+FILE *OAL_fopen(const char *path, const char *mode)
 {
 	wchar_t *path_w = NULL;
 	wchar_t *mode_w = NULL;

@@ -66,7 +66,7 @@ int OAL_is_file_regular(const char *path);
  * @return a FILE pointer to the specified file path if no error occured,
  * else NULL.
  */
-FILE *OAL_open_file(const char *path, const char *mode);
+FILE *OAL_fopen(const char *path, const char *mode);
 
 /**
  * @brief Remove the file pointed by the path

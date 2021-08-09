@@ -57,7 +57,7 @@ static void test_win_utf8(void)
 	const char *utf8_file = "test_utf8_file.txt";
 	char *utf8_str;
 	wchar_t *utf16_str;
-	FILE *file_stream = OAL_open_file(utf8_file, "a+b");
+	FILE *file_stream = OAL_fopen(utf8_file, "a+b");
 
 	utf16_str = p_utf8_to_alloc_utf16("সﺽ");
 	utf8_str = p_utf16_to_alloc_utf8(utf16_str);
@@ -106,7 +106,7 @@ static bool create_empty_text_file(const char *path)
 {
 	FILE *text_file;
 
-	if(!(text_file = OAL_open_file(path, "a+b"))) return false;
+	if(!(text_file = OAL_fopen(path, "a+b"))) return false;
 	else {
 		fclose(text_file);
 		return true;
